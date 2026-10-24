@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#7c5cf5">
-<title>আমাদের চ্যাট</title>
+<title>Our Chat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f2f0fb; --surface:#ffffff; --text:#1d1b2e; --muted:#7b7894; --line:#e6e2f5;
@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;overflow:hidden;touch-action:manipulation}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15.5px;overflow:hidden;touch-action:manipulation}
 button,input{font:inherit;color:inherit}
 .hidden{display:none!important}
 
@@ -42,12 +42,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:cal
 .who{display:flex;align-items:center;gap:10px;min-width:0}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
 .dot.on{background:var(--green);box-shadow:0 0 0 4px rgba(34,197,94,.2)}
-header h2{font-size:18px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .status{font-size:12.5px;color:var(--muted);line-height:1.2}
 .status.on{color:var(--green)}
 .status.typing{color:var(--accent);font-weight:500}
 .icon{background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
-#msgs{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+#msgs{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px;touch-action:pan-y}
 .empty{margin:auto;color:var(--muted);text-align:center}
 .m{position:relative;max-width:78%;padding:8px 12px;border-radius:20px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .m.me{align-self:flex-end;background:var(--grad);color:var(--mine-text);border-bottom-right-radius:6px}
@@ -56,9 +56,15 @@ header h2{font-size:18px;font-weight:600;line-height:1.2;white-space:nowrap;over
 .m.has-img{padding:4px}
 .m.has-img .cap{display:block;padding:4px 8px 0}
 .m.has-img .t{padding:0 8px 2px}
+.m.has-img .quote{margin:2px 4px 6px}
 .m.has-rx{margin-bottom:12px}
 .pic{display:block;max-width:100%;max-height:340px;border-radius:16px;object-fit:cover}
+.quote{border-left:3px solid var(--accent);background:rgba(124,92,245,.12);border-radius:8px;padding:4px 8px;margin-bottom:6px;font-size:13.5px;line-height:1.35;white-space:normal}
+.m.me .quote{border-left-color:rgba(255,255,255,.85);background:rgba(255,255,255,.18)}
+.quote b{display:block;font-weight:600;font-size:12.5px}
+.quote span{display:block;opacity:.85;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .t{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:11px;opacity:.8;margin-top:2px;white-space:nowrap}
+.ed{text-decoration:underline dotted;cursor:pointer;margin-right:2px}
 .tk{display:inline-flex;align-items:center}
 .tk svg{width:17px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tk.pend svg{width:12px;height:12px}
@@ -70,7 +76,15 @@ header h2{font-size:18px;font-weight:600;line-height:1.2;white-space:nowrap;over
 @keyframes fl{0%,60%{outline:3px solid #f5b301;outline-offset:2px}100%{outline:3px solid transparent}}
 .burst{position:fixed;z-index:80;font-size:44px;pointer-events:none;transform:translate(-50%,-50%);animation:bu .8s ease-out forwards}
 @keyframes bu{0%{opacity:0;transform:translate(-50%,-30%) scale(.4)}25%{opacity:1;transform:translate(-50%,-60%) scale(1.25)}100%{opacity:0;transform:translate(-50%,-190%) scale(1)}}
+
+/* Reply / edit bar */
+#ctx{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;background:var(--surface);border-top:1px solid var(--line);border-left:4px solid var(--accent)}
+#ctx .ctxtxt{flex:1;min-width:0;font-size:13.5px}
+#ctx b{display:block;color:var(--accent);font-weight:600}
+#ctx span{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 form{display:flex;gap:8px;align-items:center;padding:10px 10px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
+#ctx:not(.hidden)+form{border-top:0}
 form input[type=text]{flex:1;min-width:0;padding:12px 16px;border:1px solid var(--line);background:var(--bg);border-radius:24px;outline:none}
 form input[type=text]:focus{border-color:var(--accent)}
 .send{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer}
@@ -87,6 +101,10 @@ form input[type=text]:focus{border-color:var(--accent)}
 .pbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
 .pbar h3{font-size:18px;font-weight:600}
 #pBody{flex:1;overflow-y:auto;padding:12px}
+.card{padding:14px;margin-bottom:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;font-size:14px;line-height:1.6}
+.card small{display:block;color:var(--muted);font-size:12px}
+.card div{margin-bottom:6px;word-break:break-all}
+.card div:last-child{margin-bottom:0}
 .row{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer;text-align:left}
 .row small{margin-left:auto;color:var(--muted)}
 .row.danger{color:var(--danger)}
@@ -99,12 +117,16 @@ form input[type=text]:focus{border-color:var(--accent)}
 
 /* Sheet & lightbox */
 #sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;display:flex;align-items:flex-end;justify-content:center}
-.sbox{width:100%;max-width:720px;background:var(--surface);border-radius:22px 22px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.sbox{width:100%;max-width:720px;max-height:85%;overflow-y:auto;background:var(--surface);border-radius:22px 22px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
 .sbox button.opt{display:block;width:100%;padding:14px;border:0;background:none;text-align:left;font-size:16px;cursor:pointer;border-radius:10px}
 .sbox button.opt:hover{background:var(--bg)}
 .sbox button.opt.danger{color:var(--danger)}
 .rrow{display:flex;justify-content:space-around;padding:4px 0 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
 .info{font-size:13px;color:var(--muted);padding:2px 14px 8px;line-height:1.6;border-bottom:1px solid var(--line);margin-bottom:6px}
+.ver{padding:10px 14px;border-bottom:1px solid var(--line);white-space:pre-wrap;word-wrap:break-word}
+.ver small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.ver.cur{border-left:3px solid var(--accent)}
+.sh-title{font-weight:600;padding:4px 14px 8px}
 #light{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:90;display:flex;align-items:center;justify-content:center}
 #light img{max-width:100%;max-height:100%}
 .lbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px;z-index:1}
@@ -114,48 +136,49 @@ form input[type=text]:focus{border-color:var(--accent)}
 <body>
 
 <div id="lock" class="hidden">
-  <h1>অ্যাপ লক</h1>
-  <p>পিন দিন।</p>
-  <input id="lockPin" class="field" type="password" inputmode="numeric" placeholder="পিন" autocomplete="off">
+  <h1>App Lock</h1>
+  <p>Enter your PIN.</p>
+  <input id="lockPin" class="field" type="password" inputmode="numeric" placeholder="PIN" autocomplete="off">
   <div id="lockErr" class="err"></div>
-  <button class="primary" id="lockBtn">খুলুন</button>
+  <button class="primary" id="lockBtn">Unlock</button>
 </div>
 
 <div id="login" class="hidden">
-  <h1>আমাদের চ্যাট</h1>
-  <p>শুধু আমরা দুজন।</p>
-  <input id="email" class="field" type="email" placeholder="ইমেইল" autocomplete="username">
-  <input id="pass" class="field" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+  <h1>Our Chat</h1>
+  <p>Just the two of us.</p>
+  <input id="email" class="field" type="email" placeholder="Email" autocomplete="username">
+  <input id="pass" class="field" type="password" placeholder="Password" autocomplete="current-password">
   <div id="err" class="err"></div>
-  <button class="primary" id="loginBtn">ঢুকুন</button>
+  <button class="primary" id="loginBtn">Sign in</button>
 </div>
 
 <div id="chat" class="hidden">
   <header>
     <div class="who">
       <span class="dot" id="dot"></span>
-      <div><h2 id="title">চ্যাট</h2><div id="status" class="status">অফলাইন</div></div>
+      <div><h2 id="title">Chat</h2><div id="status" class="status">Offline</div></div>
     </div>
-    <button class="icon" id="menuBtn" aria-label="মেনু">⋮</button>
+    <button class="icon" id="menuBtn" aria-label="Menu">⋮</button>
   </header>
   <div id="msgs"></div>
+  <div id="ctx" class="hidden"><div class="ctxtxt"><b id="ctxTitle"></b><span id="ctxSnip"></span></div><button class="icon" id="ctxX" aria-label="Cancel">✕</button></div>
   <form id="sendForm" autocomplete="off">
-    <button type="button" class="icon" id="attachBtn" aria-label="ছবি">📎</button>
+    <button type="button" class="icon" id="attachBtn" aria-label="Photo">📎</button>
     <input id="file" type="file" accept="image/*" class="hidden">
-    <input id="text" type="text" placeholder="মেসেজ লিখুন" enterkeyhint="send">
-    <button type="submit" class="send" aria-label="পাঠান"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg></button>
+    <input id="text" type="text" placeholder="Type a message" enterkeyhint="send">
+    <button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg></button>
   </form>
 </div>
 
 <div id="rbar" class="hidden"></div>
 
 <div id="panel" class="overlay hidden">
-  <div class="pbar"><button class="icon" id="pBack" aria-label="ফিরুন">←</button><h3 id="pTitle"></h3></div>
+  <div class="pbar"><button class="icon" id="pBack" aria-label="Back">←</button><h3 id="pTitle"></h3></div>
   <div id="pBody"></div>
 </div>
 <div id="sheet" class="hidden"></div>
 <div id="light" class="hidden">
-  <div class="lbar"><button id="lDl">⬇ ডাউনলোড</button><button id="lX">✕</button></div>
+  <div class="lbar"><button id="lDl">⬇ Download</button><button id="lX">✕</button></div>
   <img alt="">
 </div>
 
@@ -182,14 +205,16 @@ const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 
-let me = null, partner = null, msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
+let me = null, partner = null, myEmail = '', msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
 let unsubs = [], timers = [], firstLoad = true;
+let replyTo = null, editing = null;
 
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
+const themName = () => nick[partner] || 'Them';
 
 /* ---------- theme ---------- */
 const root = document.documentElement;
@@ -209,7 +234,7 @@ function lockIfNeeded() {
 }
 $('lockBtn').onclick = async () => {
   if (await sha($('lockPin').value) === store.get('pinhash')) $('lock').classList.add('hidden');
-  else { $('lockErr').textContent = 'পিন ভুল।'; $('lockPin').value = ''; }
+  else { $('lockErr').textContent = 'Wrong PIN.'; $('lockPin').value = ''; }
 };
 $('lockPin').addEventListener('keydown', e => { if (e.key === 'Enter') $('lockBtn').click(); });
 lockIfNeeded();
@@ -230,7 +255,7 @@ window.addEventListener('pagehide', () => setPresence(false));
 $('loginBtn').onclick = async () => {
   $('err').textContent = ''; $('loginBtn').disabled = true;
   try { await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pass').value); }
-  catch (e) { $('err').textContent = 'ইমেইল বা পাসওয়ার্ড ভুল।'; }
+  catch (e) { $('err').textContent = 'Wrong email or password.'; }
   $('loginBtn').disabled = false;
 };
 $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
@@ -239,15 +264,15 @@ onAuthStateChanged(auth, user => {
   unsubs.forEach(u => u()); unsubs = [];
   timers.forEach(t => clearInterval(t)); timers = [];
   if (user) {
-    me = { uid: user.uid };
+    me = { uid: user.uid }; myEmail = user.email || '';
     partner = UIDS.find(u => u !== user.uid) || UIDS[0];
     $('login').classList.add('hidden');
     $('chat').classList.remove('hidden');
     firstLoad = true;
     startChat();
   } else {
-    me = null; msgs = []; partnerPres = null;
-    closePanel();
+    me = null; msgs = []; partnerPres = null; myEmail = '';
+    clearCtx(); closePanel();
     $('chat').classList.add('hidden');
     $('login').classList.remove('hidden');
   }
@@ -265,14 +290,14 @@ function startChat() {
     }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'meta', 'settings'), s => {
     nick = (s.exists() && s.data().nick) || {};
-    $('title').textContent = nick[partner] || 'চ্যাট';
+    $('title').textContent = nick[partner] || 'Chat';
+    render();
   }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'users', me.uid), s => {
     const d = s.exists() ? s.data(ST) : null;
     clearedAt = d && d.clearedAt ? d.clearedAt.toMillis() : 0;
     render();
   }, e => console.error(e)));
-  // activity
   unsubs.push(onSnapshot(doc(db, 'presence', partner), s => {
     partnerPres = s.exists() ? s.data(ST) : null; updateStatus();
   }, e => console.error(e)));
@@ -303,7 +328,7 @@ function markReceived() {
 /* ---------- activity (online / typing) ---------- */
 function setPresence(online) {
   if (!me) return;
-  setDoc(doc(db, 'presence', me.uid), { online, lastSeen: serverTimestamp() }, { merge: true }).catch(() => {});
+  setDoc(doc(db, 'presence', me.uid), { online, lastSeen: serverTimestamp(), email: myEmail }, { merge: true }).catch(() => {});
 }
 let typingTimer = null, lastTypingWrite = 0;
 function stopTyping() {
@@ -320,14 +345,14 @@ $('text').addEventListener('input', () => {
   clearTimeout(typingTimer);
   typingTimer = setTimeout(stopTyping, 3000);
 });
+const clock = t => new Date(t).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 function fmtSeen(t) {
   const d = new Date(t), n = new Date();
-  const tm = d.toLocaleTimeString('bn-BD', { hour: 'numeric', minute: '2-digit' });
   const day = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   const diff = Math.round((day(n) - day(d)) / 86400000);
-  if (diff === 0) return 'আজ ' + tm;
-  if (diff === 1) return 'গতকাল ' + tm;
-  return d.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' }) + ' ' + tm;
+  if (diff === 0) return 'today ' + clock(t);
+  if (diff === 1) return 'yesterday ' + clock(t);
+  return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ' ' + clock(t);
 }
 function updateStatus() {
   const p = partnerPres, now = Date.now();
@@ -337,27 +362,41 @@ function updateStatus() {
   $('dot').classList.toggle('on', online);
   const st = $('status');
   st.className = 'status' + (typing ? ' typing' : online ? ' on' : '');
-  st.textContent = typing ? 'টাইপ করছে…' : online ? 'অ্যাক্টিভ' : last ? 'শেষ দেখা ' + fmtSeen(last) : 'অফলাইন';
+  st.textContent = typing ? 'typing…' : online ? 'Active now' : last ? 'Last seen ' + fmtSeen(last) : 'Offline';
 }
 
 /* ---------- render ---------- */
-const timeStr = t => new Date(ms(t)).toLocaleTimeString('bn-BD', { hour: 'numeric', minute: '2-digit' });
+const timeStr = t => clock(ms(t));
+const fullTime = t => t ? new Date(ms(t)).toLocaleString('en-US', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—';
 const ICON = {
   pend: '<svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.8"/><path d="M6 3.4V6l1.8 1.1"/></svg>',
   one: '<svg viewBox="0 0 19 12"><path d="M3 6.5l3.2 3.2L13 2.5"/></svg>',
   two: '<svg viewBox="0 0 19 12"><path d="M1.5 6.5l3.2 3.2L11.5 2.5"/><path d="M7.2 9.4l.5.5L14.5 2.5"/></svg>'
 };
+function snippet(m) {
+  if (!m) return 'Original message';
+  if (m.deleted) return '🚫 Message deleted';
+  const s = m.image ? '📷 ' + (m.text || 'Photo') : (m.text || '');
+  return s.length > 90 ? s.slice(0, 90) + '…' : s;
+}
 
 function bubble(m) {
   const mine = m.uid === me.uid;
   const b = el('div', 'm ' + (mine ? 'me' : 'them'));
   b.id = 'm-' + m.id; b.dataset.id = m.id;
   if (m.deleted) {
-    b.classList.add('del'); b.appendChild(document.createTextNode('🚫 এই মেসেজ ডিলিট করা হয়েছে'));
+    b.classList.add('del'); b.appendChild(document.createTextNode('🚫 This message was deleted'));
   } else {
+    if (m.image) b.classList.add('has-img');
+    if (m.replyTo) {
+      const o = msgs.find(x => x.id === m.replyTo.id);
+      const q = el('div', 'quote'); q.dataset.ref = m.replyTo.id;
+      q.appendChild(el('b', '', m.replyTo.uid === me.uid ? 'You' : themName()));
+      q.appendChild(el('span', '', snippet(o)));
+      b.appendChild(q);
+    }
     if (m.image) {
-      b.classList.add('has-img');
-      const i = el('img', 'pic'); i.src = m.image; i.alt = 'ছবি'; i.draggable = false;
+      const i = el('img', 'pic'); i.src = m.image; i.alt = 'Photo'; i.draggable = false;
       b.appendChild(i);
     }
     if (m.text) {
@@ -365,6 +404,7 @@ function bubble(m) {
     }
   }
   const t = el('span', 't');
+  if (m.edited && !m.deleted) t.appendChild(el('span', 'ed', 'edited'));
   t.appendChild(document.createTextNode(timeStr(m.createdAt)));
   if (mine && !m.deleted) {
     const tk = el('span', 'tk');
@@ -396,35 +436,78 @@ function render() {
   const atBottom = firstLoad || box.scrollHeight - box.scrollTop - box.clientHeight < 90;
   const list = visibleMsgs();
   box.innerHTML = '';
-  if (!list.length) box.appendChild(el('div', 'empty', 'এখনো কোনো মেসেজ নেই। প্রথম মেসেজ পাঠান।'));
+  if (!list.length) box.appendChild(el('div', 'empty', 'No messages yet. Send the first one.'));
   list.forEach(m => box.appendChild(bubble(m)));
   box.scrollTop = atBottom ? box.scrollHeight : prev;
   firstLoad = false;
 }
+function jumpTo(id) {
+  const t = $('m-' + id);
+  if (t) { t.scrollIntoView({ block: 'center' }); t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
+}
+
+/* ---------- reply / edit context bar ---------- */
+function showCtx(title, snip) {
+  $('ctxTitle').textContent = title; $('ctxSnip').textContent = snip;
+  $('ctx').classList.remove('hidden'); $('text').focus();
+}
+function clearCtx() {
+  const wasEditing = !!editing;
+  replyTo = null; editing = null;
+  $('ctx').classList.add('hidden');
+  $('text').placeholder = 'Type a message';
+  if (wasEditing) $('text').value = '';
+}
+$('ctxX').onclick = clearCtx;
+function startReply(m) {
+  if (!m || m.deleted || m.pending) return;
+  if (editing) { editing = null; $('text').value = ''; }
+  replyTo = { id: m.id, uid: m.uid };
+  showCtx('Replying to ' + (m.uid === me.uid ? 'yourself' : themName()), snippet(m));
+}
+function startEdit(m) {
+  if (m.uid !== me.uid || m.deleted) return;
+  replyTo = null; editing = m;
+  $('text').value = m.text || '';
+  $('text').placeholder = 'Edit message';
+  showCtx('Editing message', snippet(m));
+}
 
 /* ---------- send ---------- */
-async function send(text, image) {
+async function send(text, image, rt) {
   const data = { text, uid: me.uid, createdAt: serverTimestamp() };
   if (image) data.image = image;
+  if (rt) data.replyTo = { id: rt.id, uid: rt.uid };
   try { await addDoc(collection(db, 'messages'), data); }
-  catch (e) { alert('পাঠানো যায়নি। ইন্টারনেট বা সিকিউরিটি রুল দেখুন।'); console.error(e); }
+  catch (e) { alert('Could not send. Check your connection or security rules.'); console.error(e); }
 }
 $('sendForm').onsubmit = e => {
   e.preventDefault();
   const text = $('text').value.trim();
+  if (editing) {
+    const m = editing;
+    if (text === (m.text || '')) { clearCtx(); return; }
+    if (!text && !m.image) { alert('A message can’t be empty.'); return; }
+    clearCtx(); stopTyping();
+    updateDoc(doc(db, 'messages', m.id), { text, edited: true, history: arrayUnion({ text: m.text || '', at: Date.now() }) })
+      .catch(err => { alert('Edit failed.'); console.error(err); });
+    return;
+  }
   if (!text) return;
-  $('text').value = ''; stopTyping();
-  send(text);
+  const rt = replyTo;
+  $('text').value = ''; clearCtx(); stopTyping();
+  send(text, null, rt);
 };
-$('attachBtn').onclick = () => $('file').click();
+$('attachBtn').onclick = () => { if (editing) return; $('file').click(); };
 $('file').onchange = async e => {
   const f = e.target.files[0]; e.target.value = '';
   if (!f) return;
   try {
     const url = await toDataUrl(f);
-    const caption = $('text').value.trim(); $('text').value = ''; stopTyping();
-    send(caption, url);
-  } catch (err) { alert('ছবিটা পাঠানো যায়নি (বেশি বড় হতে পারে)।'); }
+    const caption = $('text').value.trim(); const rt = replyTo;
+    $('text').value = ''; clearCtx(); stopTyping();
+    send(caption, url, rt);
+  } catch (err) { alert('Could not send that photo (it may be too large).'); }
 };
 function toDataUrl(file) {
   return new Promise((res, rej) => {
@@ -444,11 +527,11 @@ function toDataUrl(file) {
 }
 
 /* ---------- sheet / lightbox ---------- */
-function sheet(items, header) {
+function sheet(items, header, cancelLabel) {
   const s = $('sheet'); s.innerHTML = '';
   const box = el('div', 'sbox');
   if (header) box.appendChild(header);
-  items.concat([{ label: 'বাতিল' }]).forEach(it => {
+  items.concat([{ label: cancelLabel || 'Cancel' }]).forEach(it => {
     const b = el('button', 'opt' + (it.danger ? ' danger' : ''), it.label);
     b.onclick = () => { closeSheet(); if (it.fn) it.fn(); };
     box.appendChild(b);
@@ -463,11 +546,29 @@ function openLight(src) { lightSrc = src; $('light').querySelector('img').src = 
 function closeLight() { $('light').classList.add('hidden'); }
 $('lX').onclick = closeLight;
 $('light').onclick = e => { if (e.target.id === 'light') closeLight(); };
-$('lDl').onclick = () => {
+function downloadImg(src) {
   const a = document.createElement('a');
-  a.href = lightSrc; a.download = 'photo-' + Date.now() + '.jpg';
+  a.href = src; a.download = 'photo-' + Date.now() + '.jpg';
   document.body.appendChild(a); a.click(); a.remove();
-};
+}
+$('lDl').onclick = () => downloadImg(lightSrc);
+
+/* ---------- edit history ---------- */
+function showHistory(m) {
+  const hist = (m.history || []).slice().sort((a, b) => a.at - b.at);
+  const h = el('div');
+  h.appendChild(el('div', 'sh-title', 'Edit history'));
+  const cur = el('div', 'ver cur', m.text || '(no text)');
+  cur.appendChild(el('small', '', 'Current · edited ' + (hist.length ? fullTime({ toMillis: () => hist[hist.length - 1].at }) : '')));
+  h.appendChild(cur);
+  for (let i = hist.length - 1; i >= 0; i--) {
+    const v = el('div', 'ver', hist[i].text || '(no text)');
+    const when = i === 0 ? 'Original · sent ' + fullTime(m.createdAt) : 'Edited ' + fullTime({ toMillis: () => hist[i - 1].at });
+    v.appendChild(el('small', '', when));
+    h.appendChild(v);
+  }
+  sheet([], h, 'Close');
+}
 
 /* ---------- reactions ---------- */
 function toggleReaction(m, emoji) {
@@ -497,24 +598,36 @@ function burst(x, y) {
   document.body.appendChild(b); setTimeout(() => b.remove(), 850);
 }
 
-/* ---------- gestures: tap = reactions, double tap = ❤️, long press = actions ---------- */
+/* ---------- gestures: tap = reactions, double tap = ❤️, long press = actions, swipe right = reply ---------- */
 const box = $('msgs');
-let pressTimer = null, longFired = false, sx = 0, sy = 0, lastTap = { id: null, t: 0 }, tapTimer = null;
+let pressTimer = null, longFired = false, sx = 0, sy = 0, swipeM = null;
+let lastTap = { id: null, t: 0 }, tapTimer = null;
 const findMsg = node => { const b = node.closest && node.closest('.m'); return b ? msgs.find(x => x.id === b.dataset.id) : null; };
 
 box.addEventListener('pointerdown', e => {
+  longFired = false; swipeM = null;
   const m = findMsg(e.target); if (!m || m.pending) return;
-  longFired = false; sx = e.clientX; sy = e.clientY;
+  sx = e.clientX; sy = e.clientY; swipeM = m;
   clearTimeout(pressTimer);
-  pressTimer = setTimeout(() => { longFired = true; hideRbar(); if (navigator.vibrate) navigator.vibrate(15); openActions(m); }, 450);
+  pressTimer = setTimeout(() => { longFired = true; swipeM = null; hideRbar(); if (navigator.vibrate) navigator.vibrate(15); openActions(m); }, 450);
 });
-box.addEventListener('pointermove', e => { if (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy) > 10) clearTimeout(pressTimer); });
+box.addEventListener('pointermove', e => {
+  const dx = e.clientX - sx, dy = e.clientY - sy;
+  if (Math.abs(dx) > 10 || Math.abs(dy) > 10) clearTimeout(pressTimer);
+  if (swipeM && !longFired && dx > 70 && Math.abs(dy) < 35) {
+    const m = swipeM; swipeM = null; longFired = true;
+    if (navigator.vibrate) navigator.vibrate(12);
+    startReply(m);
+  }
+});
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => box.addEventListener(ev, () => clearTimeout(pressTimer)));
 box.addEventListener('contextmenu', e => { if (e.target.closest('.m')) e.preventDefault(); });
 box.addEventListener('click', e => {
   const m = findMsg(e.target); if (!m) return;
   if (longFired) { longFired = false; return; }
   if (m.pending) return;
+  const q = e.target.closest('.quote'); if (q) { jumpTo(q.dataset.ref); return; }
+  if (e.target.closest('.ed')) { showHistory(m); return; }
   if (e.target.closest('.pic')) { openLight(m.image); return; }
   if (m.deleted) return;
   const now = Date.now();
@@ -531,11 +644,12 @@ box.addEventListener('click', e => {
 });
 
 /* ---------- message actions (long press) ---------- */
-const fullTime = t => t ? new Date(ms(t)).toLocaleString('bn-BD', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—';
 function delForAll(m) {
-  const txt = m.uid === me.uid ? 'এই মেসেজ সবার জন্য ডিলিট হবে।' : 'অন্যজনের এই মেসেজ দুজনের জন্যই ডিলিট হয়ে যাবে। ফিরিয়ে আনা যাবে না।';
-  if (!confirm(txt + ' নিশ্চিত?')) return;
-  updateDoc(doc(db, 'messages', m.id), { deleted: true, text: '', image: deleteField(), reactions: deleteField() }).catch(console.error);
+  const txt = m.uid === me.uid ? 'This message will be deleted for everyone.' : 'This message from ' + themName() + ' will be deleted for both of you. It can’t be undone.';
+  if (!confirm(txt + ' Continue?')) return;
+  updateDoc(doc(db, 'messages', m.id), {
+    deleted: true, text: '', image: deleteField(), reactions: deleteField(), history: deleteField(), edited: deleteField()
+  }).catch(console.error);
 }
 function openActions(m) {
   const header = el('div');
@@ -549,19 +663,21 @@ function openActions(m) {
     header.appendChild(rr);
     if (m.uid === me.uid) {
       const info = el('div', 'info');
-      info.innerHTML = '';
-      [['পাঠানো', m.createdAt], ['ডেলিভারড', m.deliveredAt], ['সিন', m.seenAt]].forEach(([k, v]) => {
+      [['Sent', m.createdAt], ['Delivered', m.deliveredAt], ['Seen', m.seenAt]].forEach(([k, v]) => {
         info.appendChild(document.createTextNode(k + ': ' + fullTime(v))); info.appendChild(document.createElement('br'));
       });
       header.appendChild(info);
     }
   }
   const items = [];
-  if (!m.deleted && m.image) items.push({ label: 'ছবি ডাউনলোড', fn: () => { openLight(m.image); $('lDl').click(); closeLight(); } });
-  if (!m.deleted && m.text) items.push({ label: 'কপি', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
-  items.push({ label: 'আমার জন্য ডিলিট', danger: true, fn: () =>
+  if (!m.deleted) items.push({ label: 'Reply', fn: () => startReply(m) });
+  if (!m.deleted && m.uid === me.uid) items.push({ label: 'Edit', fn: () => startEdit(m) });
+  if (!m.deleted && m.edited) items.push({ label: 'Edit history', fn: () => showHistory(m) });
+  if (!m.deleted && m.image) items.push({ label: 'Download photo', fn: () => downloadImg(m.image) });
+  if (!m.deleted && m.text) items.push({ label: 'Copy', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
+  items.push({ label: 'Delete for me', danger: true, fn: () =>
     updateDoc(doc(db, 'messages', m.id), { hiddenFor: arrayUnion(me.uid) }).catch(console.error) });
-  if (!m.deleted) items.push({ label: 'সবার জন্য ডিলিট', danger: true, fn: () => delForAll(m) });
+  if (!m.deleted) items.push({ label: 'Delete for everyone', danger: true, fn: () => delForAll(m) });
   sheet(items, header);
 }
 
@@ -579,18 +695,22 @@ function row(icon, label, fn, extra, danger) {
 }
 
 function showHome() {
-  const b = setView('home', 'বিস্তারিত');
+  const b = setView('home', 'Details');
+  const card = el('div', 'card');
+  const a = el('div'); a.appendChild(el('small', '', 'Signed in as')); a.appendChild(document.createTextNode(myEmail || '—'));
+  const c = el('div'); c.appendChild(el('small', '', 'Other person')); c.appendChild(document.createTextNode((partnerPres && partnerPres.email) || '—'));
+  card.appendChild(a); card.appendChild(c); b.appendChild(card);
   const imgs = visibleMsgs().filter(m => m.image && !m.deleted).length;
-  b.appendChild(row('👤', 'নিকনেম', showNick));
-  b.appendChild(row('🖼', 'সব এটাচমেন্ট', showMedia, imgs + 'টি'));
-  b.appendChild(row('🔍', 'মেসেজ সার্চ', showSearch));
-  b.appendChild(row('🔒', 'অ্যাপ লক (পিন)', showLock, store.get('pinhash') ? 'চালু' : 'বন্ধ'));
-  b.appendChild(row('🌓', 'থিম বদলান', toggleTheme));
-  b.appendChild(row('🧹', 'চ্যাট ক্লিয়ার', () => sheet([
-    { label: 'আমার জন্য ক্লিয়ার', danger: true, fn: clearForMe },
-    { label: 'সবার জন্য ক্লিয়ার', danger: true, fn: clearForAll }
+  b.appendChild(row('👤', 'Nicknames', showNick));
+  b.appendChild(row('🖼', 'All attachments', showMedia, String(imgs)));
+  b.appendChild(row('🔍', 'Search messages', showSearch));
+  b.appendChild(row('🔒', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On' : 'Off'));
+  b.appendChild(row('🌓', 'Switch theme', toggleTheme));
+  b.appendChild(row('🧹', 'Clear chat', () => sheet([
+    { label: 'Clear for me', danger: true, fn: clearForMe },
+    { label: 'Clear for everyone', danger: true, fn: clearForAll }
   ]), '', true));
-  b.appendChild(row('↪', 'বের হন', async () => {
+  b.appendChild(row('↪', 'Sign out', async () => {
     closePanel(); stopTyping();
     try { await setDoc(doc(db, 'presence', me.uid), { online: false, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
     signOut(auth);
@@ -598,47 +718,43 @@ function showHome() {
 }
 
 function showNick() {
-  const b = setView('nick', 'নিকনেম');
-  b.appendChild(el('label', 'lbl', 'আপনার নিকনেম'));
+  const b = setView('nick', 'Nicknames');
+  b.appendChild(el('label', 'lbl', 'Your nickname'));
   const a = el('input', 'field'); a.value = nick[me.uid] || ''; a.maxLength = 30; b.appendChild(a);
-  b.appendChild(el('label', 'lbl', 'অন্যজনের নিকনেম'));
+  b.appendChild(el('label', 'lbl', 'Their nickname'));
   const c = el('input', 'field'); c.value = nick[partner] || ''; c.maxLength = 30; b.appendChild(c);
-  const s = el('button', 'primary', 'সেভ করুন');
+  const s = el('button', 'primary', 'Save');
   s.onclick = async () => {
     try {
       await setDoc(doc(db, 'meta', 'settings'), { nick: { [me.uid]: a.value.trim(), [partner]: c.value.trim() } }, { merge: true });
       showHome();
-    } catch (e) { alert('সেভ হয়নি।'); console.error(e); }
+    } catch (e) { alert('Could not save.'); console.error(e); }
   };
   b.appendChild(s);
 }
 
 function showMedia() {
-  const b = setView('media', 'সব এটাচমেন্ট');
+  const b = setView('media', 'All attachments');
   const list = visibleMsgs().filter(m => m.image && !m.deleted).reverse();
-  if (!list.length) { b.appendChild(el('div', 'note', 'এখনো কোনো ছবি পাঠানো হয়নি।')); return; }
+  if (!list.length) { b.appendChild(el('div', 'note', 'No photos have been sent yet.')); return; }
   const g = el('div', 'grid');
-  list.forEach(m => { const i = el('img'); i.src = m.image; i.alt = 'ছবি'; i.onclick = () => openLight(m.image); g.appendChild(i); });
+  list.forEach(m => { const i = el('img'); i.src = m.image; i.alt = 'Photo'; i.onclick = () => openLight(m.image); g.appendChild(i); });
   b.appendChild(g);
 }
 
 function showSearch() {
-  const b = setView('search', 'মেসেজ সার্চ');
-  const inp = el('input', 'field'); inp.placeholder = 'কী খুঁজছেন?'; b.appendChild(inp);
+  const b = setView('search', 'Search messages');
+  const inp = el('input', 'field'); inp.placeholder = 'Search…'; b.appendChild(inp);
   const out = el('div'); b.appendChild(out);
   inp.oninput = () => {
     const q = inp.value.trim().toLowerCase(); out.innerHTML = '';
     if (!q) return;
     const hits = visibleMsgs().filter(m => !m.deleted && m.text && m.text.toLowerCase().includes(q)).reverse().slice(0, 50);
-    if (!hits.length) { out.appendChild(el('div', 'note', 'কিছু পাওয়া যায়নি।')); return; }
+    if (!hits.length) { out.appendChild(el('div', 'note', 'No results.')); return; }
     hits.forEach(m => {
       const h = el('div', 'hit', m.text.length > 90 ? m.text.slice(0, 90) + '…' : m.text);
-      h.appendChild(el('small', '', (m.uid === me.uid ? 'আপনি' : (nick[partner] || 'অন্যজন')) + ' · ' + new Date(ms(m.createdAt)).toLocaleString('bn-BD')));
-      h.onclick = () => {
-        closePanel();
-        const t = $('m-' + m.id);
-        if (t) { t.scrollIntoView({ block: 'center' }); t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
-      };
+      h.appendChild(el('small', '', (m.uid === me.uid ? 'You' : themName()) + ' · ' + fullTime(m.createdAt)));
+      h.onclick = () => { closePanel(); jumpTo(m.id); };
       out.appendChild(h);
     });
   };
@@ -646,18 +762,18 @@ function showSearch() {
 }
 
 function showLock() {
-  const b = setView('lock', 'অ্যাপ লক');
+  const b = setView('lock', 'App lock');
   const has = !!store.get('pinhash');
-  b.appendChild(el('div', 'note', 'পিন শুধু এই ফোনে থাকে। অ্যাপ খুললে বা ৩০ সেকেন্ডের বেশি ব্যাকগ্রাউন্ডে থাকলে পিন চাইবে।'));
-  const p = el('input', 'field'); p.type = 'password'; p.inputMode = 'numeric'; p.placeholder = 'নতুন পিন (৪-৮ সংখ্যা)'; p.maxLength = 8; b.appendChild(p);
-  const s = el('button', 'primary', has ? 'পিন বদলান' : 'পিন চালু করুন');
+  b.appendChild(el('div', 'note', 'The PIN is stored only on this phone. It is asked when you open the app or after it has been in the background for 30 seconds.'));
+  const p = el('input', 'field'); p.type = 'password'; p.inputMode = 'numeric'; p.placeholder = 'New PIN (4–8 digits)'; p.maxLength = 8; b.appendChild(p);
+  const s = el('button', 'primary', has ? 'Change PIN' : 'Turn on PIN');
   s.onclick = async () => {
-    if (!/^\d{4,8}$/.test(p.value)) { alert('৪ থেকে ৮টি সংখ্যা দিন।'); return; }
+    if (!/^\d{4,8}$/.test(p.value)) { alert('Enter 4 to 8 digits.'); return; }
     store.set('pinhash', await sha(p.value)); showHome();
   };
   b.appendChild(s);
   if (has) {
-    const d = el('button', 'row danger', 'পিন বন্ধ করুন'); d.style.marginTop = '12px';
+    const d = el('button', 'row danger', 'Turn off PIN'); d.style.marginTop = '12px';
     d.onclick = () => { store.del('pinhash'); showHome(); };
     b.appendChild(d);
   }
@@ -666,10 +782,10 @@ function showLock() {
 /* ---------- clear chat ---------- */
 async function clearForMe() {
   try { await setDoc(doc(db, 'users', me.uid), { clearedAt: serverTimestamp() }); closePanel(); }
-  catch (e) { alert('ক্লিয়ার হয়নি।'); console.error(e); }
+  catch (e) { alert('Could not clear the chat.'); console.error(e); }
 }
 async function clearForAll() {
-  if (!confirm('দুজনের চ্যাটই স্থায়ীভাবে মুছে যাবে। নিশ্চিত?')) return;
+  if (!confirm('This will permanently delete the whole chat for both of you. Continue?')) return;
   try {
     const snap = await getDocs(collection(db, 'messages'));
     let batch = writeBatch(db), n = 0;
@@ -679,7 +795,7 @@ async function clearForAll() {
     }
     if (n) await batch.commit();
     closePanel();
-  } catch (e) { alert('ক্লিয়ার হয়নি।'); console.error(e); }
+  } catch (e) { alert('Could not clear the chat.'); console.error(e); }
 }
 </script>
 </body>
