@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3b4cca">
+<title>আমাদের চ্যাট</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f8; --surface:#ffffff; --text:#1b1f2a; --muted:#7a8194;
+  --mine:#3b4cca; --mine-text:#ffffff; --theirs:#e6e8f0; --theirs-text:#1b1f2a;
+  --line:#e1e4ec; --danger:#d33;
+}
+:root[data-theme="dark"]{
+  --bg:#0e1116; --surface:#171b22; --text:#e8eaf0; --muted:#8a91a3;
+  --mine:#5565e0; --mine-text:#ffffff; --theirs:#232834; --theirs-text:#e8eaf0;
+  --line:#262c38; --danger:#ff6b6b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;overflow:hidden}
+button,input{font:inherit;color:inherit}
+.hidden{display:none!important}
+
+/* Login & lock */
+#login,#lock{height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:400px;margin:0 auto}
+#lock{position:fixed;inset:0;max-width:none;align-items:center;background:var(--bg);z-index:100}
+#lock>*{width:100%;max-width:340px}
+#login h1,#lock h1{font-size:28px;font-weight:600;margin-bottom:6px}
+#login p,#lock p{color:var(--muted);margin-bottom:24px}
+.field{width:100%;padding:14px;margin-bottom:12px;border:1px solid var(--line);background:var(--surface);border-radius:12px;outline:none}
+.field:focus{border-color:var(--mine)}
+.primary{width:100%;padding:14px;border:0;border-radius:12px;background:var(--mine);color:var(--mine-text);font-weight:600;cursor:pointer}
+.primary:disabled{opacity:.6}
+.err{color:var(--danger);font-size:14px;min-height:20px;margin-bottom:10px}
+
+/* Chat */
+#chat{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;background:var(--bg)}
+header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+header h2{font-size:18px;font-weight:600}
+.icon{background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
+.icon:hover{background:var(--bg)}
+#msgs{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
+.empty{margin:auto;color:var(--muted);text-align:center}
+.m{max-width:78%;padding:8px 12px;border-radius:18px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer}
+.m.me{align-self:flex-end;background:var(--mine);color:var(--mine-text);border-bottom-right-radius:5px}
+.m.them{align-self:flex-start;background:var(--theirs);color:var(--theirs-text);border-bottom-left-radius:5px}
+.m.del{font-style:italic;opacity:.65}
+.pic{display:block;max-width:100%;max-height:320px;border-radius:12px;margin-bottom:4px;object-fit:cover}
+.t{display:block;font-size:11px;opacity:.75;margin-top:2px;text-align:right;white-space:nowrap}
+.tk{margin-left:4px;letter-spacing:-2px}
+.tk.seen{color:#7fe3ff;opacity:1}
+.flash{animation:fl 1.4s}
+@keyframes fl{0%,60%{outline:3px solid #f5b301;outline-offset:2px}100%{outline:3px solid transparent}}
+form{display:flex;gap:8px;align-items:center;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
+form input[type=text]{flex:1;min-width:0;padding:12px 16px;border:1px solid var(--line);background:var(--bg);border-radius:24px;outline:none}
+form input[type=text]:focus{border-color:var(--mine)}
+form .send{border:0;background:var(--mine);color:var(--mine-text);padding:11px 18px;border-radius:24px;font-weight:600;cursor:pointer}
+
+/* Panel */
+.overlay{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+.pbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
+.pbar h3{font-size:18px;font-weight:600}
+#pBody{flex:1;overflow-y:auto;padding:12px}
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;text-align:left}
+.row small{margin-left:auto;color:var(--muted)}
+.row.danger{color:var(--danger)}
+.lbl{display:block;color:var(--muted);font-size:14px;margin:6px 2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer}
+.hit{padding:10px 12px;margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.hit small{display:block;color:var(--muted)}
+.note{color:var(--muted);font-size:14px;margin:8px 2px}
+
+/* Sheet & lightbox */
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;display:flex;align-items:flex-end;justify-content:center}
+.sbox{width:100%;max-width:720px;background:var(--surface);border-radius:20px 20px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.sbox button{display:block;width:100%;padding:14px;border:0;background:none;text-align:left;font-size:16px;cursor:pointer;border-radius:10px}
+.sbox button:hover{background:var(--bg)}
+.sbox button.danger{color:var(--danger)}
+#light{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:90;display:flex;align-items:center;justify-content:center}
+#light img{max-width:100%;max-height:100%}
+</style>
+</head>
+<body>
+
+<div id="lock" class="hidden">
+  <h1>অ্যাপ লক</h1>
+  <p>পিন দিন।</p>
+  <input id="lockPin" class="field" type="password" inputmode="numeric" placeholder="পিন" autocomplete="off">
+  <div id="lockErr" class="err"></div>
+  <button class="primary" id="lockBtn">খুলুন</button>
+</div>
+
+<div id="login" class="hidden">
+  <h1>আমাদের চ্যাট</h1>
+  <p>শুধু আমরা দুজন।</p>
+  <input id="email" class="field" type="email" placeholder="ইমেইল" autocomplete="username">
+  <input id="pass" class="field" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password">
+  <div id="err" class="err"></div>
+  <button class="primary" id="loginBtn">ঢুকুন</button>
+</div>
+
+<div id="chat" class="hidden">
+  <header>
+    <h2 id="title">চ্যাট</h2>
+    <button class="icon" id="menuBtn" aria-label="মেনু">⋮</button>
+  </header>
+  <div id="msgs"></div>
+  <form id="sendForm" autocomplete="off">
+    <button type="button" class="icon" id="attachBtn" aria-label="ছবি">📎</button>
+    <input id="file" type="file" accept="image/*" class="hidden">
+    <input id="text" type="text" placeholder="মেসেজ লিখুন" enterkeyhint="send">
+    <button type="submit" class="send">পাঠান</button>
+  </form>
+</div>
+
+<div id="panel" class="overlay hidden">
+  <div class="pbar"><button class="icon" id="pBack" aria-label="ফিরুন">←</button><h3 id="pTitle"></h3></div>
+  <div id="pBody"></div>
+</div>
+<div id="sheet" class="hidden"></div>
+<div id="light" class="hidden"><img alt=""></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
+         doc, setDoc, updateDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDRXqzXMjL-c4oUpRZMF1ueIVTkGVb0SMs",
+  authDomain: "weee-b3da7.firebaseapp.com",
+  projectId: "weee-b3da7",
+  storageBucket: "weee-b3da7.firebasestorage.app",
+  messagingSenderId: "742801049611",
+  appId: "1:742801049611:web:304c3baa78eacdf5f0df0e"
+};
+const UIDS = ['mMmmSKU8lthqr64r660nx8kPIys2', 'bkBV7FBM9pN4am3xQwYzeitBaD83'];
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const $ = id => document.getElementById(id);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+let me = null, partner = null, msgs = [], nick = {}, clearedAt = 0;
+let unsubs = [], firstLoad = true;
+
+/* ---------- storage helpers ---------- */
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+/* ---------- theme ---------- */
+const root = document.documentElement;
+root.dataset.theme = store.get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+function toggleTheme() {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  root.dataset.theme = next; store.set('theme', next);
+}
+
+/* ---------- app lock ---------- */
+async function sha(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('chat-salt:' + s));
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('');
+}
+function lockIfNeeded() {
+  if (store.get('pinhash')) { $('lock').classList.remove('hidden'); $('lockPin').value = ''; $('lockErr').textContent = ''; }
+}
+$('lockBtn').onclick = async () => {
+  if (await sha($('lockPin').value) === store.get('pinhash')) $('lock').classList.add('hidden');
+  else { $('lockErr').textContent = 'পিন ভুল।'; $('lockPin').value = ''; }
+};
+$('lockPin').addEventListener('keydown', e => { if (e.key === 'Enter') $('lockBtn').click(); });
+lockIfNeeded();
+let hiddenAt = 0;
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') hiddenAt = Date.now();
+  else {
+    if (hiddenAt && Date.now() - hiddenAt > 30000) lockIfNeeded();
+    markReceived();
+  }
+});
+window.addEventListener('focus', () => markReceived());
+
+/* ---------- login ---------- */
+$('loginBtn').onclick = async () => {
+  $('err').textContent = ''; $('loginBtn').disabled = true;
+  try { await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pass').value); }
+  catch (e) { $('err').textContent = 'ইমেইল বা পাসওয়ার্ড ভুল।'; }
+  $('loginBtn').disabled = false;
+};
+$('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+
+onAuthStateChanged(auth, user => {
+  unsubs.forEach(u => u()); unsubs = [];
+  if (user) {
+    me = { uid: user.uid };
+    partner = UIDS.find(u => u !== user.uid) || UIDS[0];
+    $('login').classList.add('hidden');
+    $('chat').classList.remove('hidden');
+    firstLoad = true;
+    startChat();
+  } else {
+    me = null; msgs = [];
+    closePanel();
+    $('chat').classList.add('hidden');
+    $('login').classList.remove('hidden');
+  }
+});
+
+/* ---------- data ---------- */
+const ms = t => t ? t.toMillis() : Date.now();
+const ST = { serverTimestamps: 'estimate' };
+
+function startChat() {
+  unsubs.push(onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc'), limit(200)),
+    { includeMetadataChanges: true }, snap => {
+      msgs = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites })).reverse();
+      render(); markReceived();
+    }, e => console.error(e)));
+  unsubs.push(onSnapshot(doc(db, 'meta', 'settings'), s => {
+    nick = (s.exists() && s.data().nick) || {};
+    $('title').textContent = nick[partner] || 'চ্যাট';
+  }, e => console.error(e)));
+  unsubs.push(onSnapshot(doc(db, 'users', me.uid), s => {
+    const d = s.exists() ? s.data(ST) : null;
+    clearedAt = d && d.clearedAt ? d.clearedAt.toMillis() : 0;
+    render();
+  }, e => console.error(e)));
+}
+
+function visibleMsgs() {
+  return msgs.filter(m => !(m.hiddenFor || []).includes(me.uid) && ms(m.createdAt) > clearedAt);
+}
+
+function markReceived() {
+  if (!me || !msgs.length) return;
+  const seen = document.visibilityState === 'visible';
+  const batch = writeBatch(db); let n = 0;
+  for (const m of msgs) {
+    if (m.uid === me.uid || m.pending) continue;
+    const u = {};
+    if (!m.deliveredAt) u.deliveredAt = serverTimestamp();
+    if (seen && !m.seenAt) u.seenAt = serverTimestamp();
+    if (Object.keys(u).length) { batch.update(doc(db, 'messages', m.id), u); n++; }
+  }
+  if (n) batch.commit().catch(e => console.error(e));
+}
+
+/* ---------- render ---------- */
+const timeStr = t => new Date(ms(t)).toLocaleTimeString('bn-BD', { hour: 'numeric', minute: '2-digit' });
+
+function bubble(m) {
+  const mine = m.uid === me.uid;
+  const b = el('div', 'm ' + (mine ? 'me' : 'them'));
+  b.id = 'm-' + m.id;
+  if (m.deleted) {
+    b.classList.add('del'); b.appendChild(document.createTextNode('🚫 এই মেসেজ ডিলিট করা হয়েছে'));
+  } else {
+    if (m.image) {
+      const i = el('img', 'pic'); i.src = m.image; i.alt = 'ছবি';
+      i.onclick = e => { e.stopPropagation(); openLight(m.image); };
+      b.appendChild(i);
+    }
+    if (m.text) b.appendChild(document.createTextNode(m.text));
+  }
+  const t = el('span', 't', timeStr(m.createdAt));
+  if (mine && !m.deleted) {
+    const tk = el('span', 'tk');
+    if (m.pending) tk.textContent = '🕓';
+    else if (m.seenAt) { tk.textContent = '✓✓'; tk.classList.add('seen'); }
+    else if (m.deliveredAt) tk.textContent = '✓✓';
+    else tk.textContent = '✓';
+    t.appendChild(tk);
+  }
+  b.appendChild(t);
+  b.onclick = () => openActions(m);
+  return b;
+}
+
+function render() {
+  if (!me) return;
+  const box = $('msgs');
+  const prev = box.scrollTop;
+  const atBottom = firstLoad || box.scrollHeight - box.scrollTop - box.clientHeight < 90;
+  const list = visibleMsgs();
+  box.innerHTML = '';
+  if (!list.length) box.appendChild(el('div', 'empty', 'এখনো কোনো মেসেজ নেই। প্রথম মেসেজ পাঠান।'));
+  list.forEach(m => box.appendChild(bubble(m)));
+  box.scrollTop = atBottom ? box.scrollHeight : prev;
+  firstLoad = false;
+}
+
+/* ---------- send ---------- */
+async function send(text, image) {
+  const data = { text, uid: me.uid, createdAt: serverTimestamp() };
+  if (image) data.image = image;
+  try { await addDoc(collection(db, 'messages'), data); }
+  catch (e) { alert('পাঠানো যায়নি। ইন্টারনেট বা সিকিউরিটি রুল দেখুন।'); console.error(e); }
+}
+$('sendForm').onsubmit = e => {
+  e.preventDefault();
+  const text = $('text').value.trim();
+  if (!text) return;
+  $('text').value = '';
+  send(text);
+};
+$('attachBtn').onclick = () => $('file').click();
+$('file').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const url = await toDataUrl(f);
+    const caption = $('text').value.trim(); $('text').value = '';
+    send(caption, url);
+  } catch (err) { alert('ছবিটা পাঠানো যায়নি (বেশি বড় হতে পারে)।'); }
+};
+function toDataUrl(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const s = Math.min(1, 900 / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      let q = 0.7, out = c.toDataURL('image/jpeg', q);
+      while (out.length > 700000 && q > 0.3) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+      URL.revokeObjectURL(url);
+      out.length > 850000 ? rej(new Error('big')) : res(out);
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+
+/* ---------- sheet / lightbox ---------- */
+function sheet(items) {
+  const s = $('sheet'); s.innerHTML = '';
+  const box = el('div', 'sbox');
+  items.concat([{ label: 'বাতিল' }]).forEach(it => {
+    const b = el('button', it.danger ? 'danger' : '', it.label);
+    b.onclick = () => { closeSheet(); if (it.fn) it.fn(); };
+    box.appendChild(b);
+  });
+  s.appendChild(box); s.classList.remove('hidden');
+  s.onclick = e => { if (e.target === s) closeSheet(); };
+}
+function closeSheet() { $('sheet').classList.add('hidden'); }
+function openLight(src) { $('light').querySelector('img').src = src; $('light').classList.remove('hidden'); }
+$('light').onclick = () => $('light').classList.add('hidden');
+
+/* ---------- message actions ---------- */
+function openActions(m) {
+  const items = [];
+  if (!m.deleted && m.text) items.push({ label: 'কপি', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
+  items.push({ label: 'আমার জন্য ডিলিট', danger: true, fn: () =>
+    updateDoc(doc(db, 'messages', m.id), { hiddenFor: arrayUnion(me.uid) }).catch(console.error) });
+  if (m.uid === me.uid && !m.deleted) items.push({ label: 'সবার জন্য ডিলিট', danger: true, fn: () =>
+    updateDoc(doc(db, 'messages', m.id), { deleted: true, text: '', image: deleteField() }).catch(console.error) });
+  sheet(items);
+}
+
+/* ---------- panel ---------- */
+let view = 'home';
+$('menuBtn').onclick = () => { $('panel').classList.remove('hidden'); showHome(); };
+$('pBack').onclick = () => { if (view === 'home') closePanel(); else showHome(); };
+function closePanel() { $('panel').classList.add('hidden'); }
+function setView(name, title) { view = name; $('pTitle').textContent = title; $('pBody').innerHTML = ''; return $('pBody'); }
+function row(icon, label, fn, extra, danger) {
+  const r = el('button', 'row' + (danger ? ' danger' : ''));
+  r.appendChild(el('span', '', icon)); r.appendChild(el('span', '', label));
+  if (extra) r.appendChild(el('small', '', extra));
+  r.onclick = fn; return r;
+}
+
+function showHome() {
+  const b = setView('home', 'বিস্তারিত');
+  const imgs = visibleMsgs().filter(m => m.image && !m.deleted).length;
+  b.appendChild(row('👤', 'নিকনেম', showNick));
+  b.appendChild(row('🖼', 'সব এটাচমেন্ট', showMedia, imgs + 'টি'));
+  b.appendChild(row('🔍', 'মেসেজ সার্চ', showSearch));
+  b.appendChild(row('🔒', 'অ্যাপ লক (পিন)', showLock, store.get('pinhash') ? 'চালু' : 'বন্ধ'));
+  b.appendChild(row('🌓', 'থিম বদলান', toggleTheme));
+  b.appendChild(row('🧹', 'চ্যাট ক্লিয়ার', () => sheet([
+    { label: 'আমার জন্য ক্লিয়ার', danger: true, fn: clearForMe },
+    { label: 'সবার জন্য ক্লিয়ার', danger: true, fn: clearForAll }
+  ]), '', true));
+  b.appendChild(row('↪', 'বের হন', () => { closePanel(); signOut(auth); }));
+}
+
+function showNick() {
+  const b = setView('nick', 'নিকনেম');
+  b.appendChild(el('label', 'lbl', 'আপনার নিকনেম'));
+  const a = el('input', 'field'); a.value = nick[me.uid] || ''; a.maxLength = 30; b.appendChild(a);
+  b.appendChild(el('label', 'lbl', 'অন্যজনের নিকনেম'));
+  const c = el('input', 'field'); c.value = nick[partner] || ''; c.maxLength = 30; b.appendChild(c);
+  const s = el('button', 'primary', 'সেভ করুন');
+  s.onclick = async () => {
+    try {
+      await setDoc(doc(db, 'meta', 'settings'), { nick: { [me.uid]: a.value.trim(), [partner]: c.value.trim() } }, { merge: true });
+      showHome();
+    } catch (e) { alert('সেভ হয়নি।'); console.error(e); }
+  };
+  b.appendChild(s);
+}
+
+function showMedia() {
+  const b = setView('media', 'সব এটাচমেন্ট');
+  const list = visibleMsgs().filter(m => m.image && !m.deleted).reverse();
+  if (!list.length) { b.appendChild(el('div', 'note', 'এখনো কোনো ছবি পাঠানো হয়নি।')); return; }
+  const g = el('div', 'grid');
+  list.forEach(m => { const i = el('img'); i.src = m.image; i.alt = 'ছবি'; i.onclick = () => openLight(m.image); g.appendChild(i); });
+  b.appendChild(g);
+}
+
+function showSearch() {
+  const b = setView('search', 'মেসেজ সার্চ');
+  const inp = el('input', 'field'); inp.placeholder = 'কী খুঁজছেন?'; b.appendChild(inp);
+  const out = el('div'); b.appendChild(out);
+  inp.oninput = () => {
+    const q = inp.value.trim().toLowerCase(); out.innerHTML = '';
+    if (!q) return;
+    const hits = visibleMsgs().filter(m => !m.deleted && m.text && m.text.toLowerCase().includes(q)).reverse().slice(0, 50);
+    if (!hits.length) { out.appendChild(el('div', 'note', 'কিছু পাওয়া যায়নি।')); return; }
+    hits.forEach(m => {
+      const h = el('div', 'hit', m.text.length > 90 ? m.text.slice(0, 90) + '…' : m.text);
+      h.appendChild(el('small', '', (m.uid === me.uid ? 'আপনি' : (nick[partner] || 'অন্যজন')) + ' · ' + new Date(ms(m.createdAt)).toLocaleString('bn-BD')));
+      h.onclick = () => {
+        closePanel();
+        const t = $('m-' + m.id);
+        if (t) { t.scrollIntoView({ block: 'center' }); t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
+      };
+      out.appendChild(h);
+    });
+  };
+  inp.focus();
+}
+
+function showLock() {
+  const b = setView('lock', 'অ্যাপ লক');
+  const has = !!store.get('pinhash');
+  b.appendChild(el('div', 'note', 'পিন শুধু এই ফোনে থাকে। অ্যাপ খুললে বা ৩০ সেকেন্ডের বেশি ব্যাকগ্রাউন্ডে থাকলে পিন চাইবে।'));
+  const p = el('input', 'field'); p.type = 'password'; p.inputMode = 'numeric'; p.placeholder = 'নতুন পিন (৪-৮ সংখ্যা)'; p.maxLength = 8; b.appendChild(p);
+  const s = el('button', 'primary', has ? 'পিন বদলান' : 'পিন চালু করুন');
+  s.onclick = async () => {
+    if (!/^\d{4,8}$/.test(p.value)) { alert('৪ থেকে ৮টি সংখ্যা দিন।'); return; }
+    store.set('pinhash', await sha(p.value)); showHome();
+  };
+  b.appendChild(s);
+  if (has) {
+    const d = el('button', 'row danger', 'পিন বন্ধ করুন'); d.style.marginTop = '12px';
+    d.onclick = () => { store.del('pinhash'); showHome(); };
+    b.appendChild(d);
+  }
+}
+
+/* ---------- clear chat ---------- */
+async function clearForMe() {
+  try { await setDoc(doc(db, 'users', me.uid), { clearedAt: serverTimestamp() }); closePanel(); }
+  catch (e) { alert('ক্লিয়ার হয়নি।'); console.error(e); }
+}
+async function clearForAll() {
+  if (!confirm('দুজনের চ্যাটই স্থায়ীভাবে মুছে যাবে। নিশ্চিত?')) return;
+  try {
+    const snap = await getDocs(collection(db, 'messages'));
+    let batch = writeBatch(db), n = 0;
+    for (const d of snap.docs) {
+      batch.delete(d.ref); n++;
+      if (n === 400) { await batch.commit(); batch = writeBatch(db); n = 0; }
+    }
+    if (n) await batch.commit();
+    closePanel();
+  } catch (e) { alert('ক্লিয়ার হয়নি।'); console.error(e); }
+}
+</script>
+</body>
+</html>
