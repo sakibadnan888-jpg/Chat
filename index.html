@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#3b4cca">
+<meta name="theme-color" content="#7c5cf5">
 <title>আমাদের চ্যাট</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f4f5f8; --surface:#ffffff; --text:#1b1f2a; --muted:#7a8194;
-  --mine:#3b4cca; --mine-text:#ffffff; --theirs:#e6e8f0; --theirs-text:#1b1f2a;
-  --line:#e1e4ec; --danger:#d33;
+  --bg:#f2f0fb; --surface:#ffffff; --text:#1d1b2e; --muted:#7b7894; --line:#e6e2f5;
+  --grad:linear-gradient(135deg,#8b5cf6 0%,#5b8def 100%);
+  --mine-text:#ffffff; --theirs:#ffffff; --theirs-text:#1d1b2e;
+  --accent:#7c5cf5; --green:#22c55e; --danger:#e5484d; --shadow:0 1px 3px rgba(60,40,140,.12);
 }
 :root[data-theme="dark"]{
-  --bg:#0e1116; --surface:#171b22; --text:#e8eaf0; --muted:#8a91a3;
-  --mine:#5565e0; --mine-text:#ffffff; --theirs:#232834; --theirs-text:#e8eaf0;
-  --line:#262c38; --danger:#ff6b6b;
+  --bg:#0c0d17; --surface:#141626; --text:#ecebf7; --muted:#8c8aa8; --line:#252845;
+  --theirs:#1f2238; --theirs-text:#ecebf7; --accent:#8b7cff; --danger:#ff6b70; --shadow:0 1px 3px rgba(0,0,0,.4);
 }
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;overflow:hidden}
+body{font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:16px;overflow:hidden;touch-action:manipulation}
 button,input{font:inherit;color:inherit}
 .hidden{display:none!important}
 
@@ -28,60 +28,87 @@ button,input{font:inherit;color:inherit}
 #login,#lock{height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:400px;margin:0 auto}
 #lock{position:fixed;inset:0;max-width:none;align-items:center;background:var(--bg);z-index:100}
 #lock>*{width:100%;max-width:340px}
-#login h1,#lock h1{font-size:28px;font-weight:600;margin-bottom:6px}
+#login h1,#lock h1{font-size:30px;font-weight:600;margin-bottom:6px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
 #login p,#lock p{color:var(--muted);margin-bottom:24px}
-.field{width:100%;padding:14px;margin-bottom:12px;border:1px solid var(--line);background:var(--surface);border-radius:12px;outline:none}
-.field:focus{border-color:var(--mine)}
-.primary{width:100%;padding:14px;border:0;border-radius:12px;background:var(--mine);color:var(--mine-text);font-weight:600;cursor:pointer}
+.field{width:100%;padding:14px;margin-bottom:12px;border:1px solid var(--line);background:var(--surface);border-radius:14px;outline:none}
+.field:focus{border-color:var(--accent)}
+.primary{width:100%;padding:14px;border:0;border-radius:14px;background:var(--grad);color:#fff;font-weight:600;cursor:pointer}
 .primary:disabled{opacity:.6}
 .err{color:var(--danger);font-size:14px;min-height:20px;margin-bottom:10px}
 
 /* Chat */
 #chat{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;background:var(--bg)}
-header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
-header h2{font-size:18px;font-weight:600}
+header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.who{display:flex;align-items:center;gap:10px;min-width:0}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
+.dot.on{background:var(--green);box-shadow:0 0 0 4px rgba(34,197,94,.2)}
+header h2{font-size:18px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:12.5px;color:var(--muted);line-height:1.2}
+.status.on{color:var(--green)}
+.status.typing{color:var(--accent);font-weight:500}
 .icon{background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
-.icon:hover{background:var(--bg)}
 #msgs{flex:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px}
 .empty{margin:auto;color:var(--muted);text-align:center}
-.m{max-width:78%;padding:8px 12px;border-radius:18px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer}
-.m.me{align-self:flex-end;background:var(--mine);color:var(--mine-text);border-bottom-right-radius:5px}
-.m.them{align-self:flex-start;background:var(--theirs);color:var(--theirs-text);border-bottom-left-radius:5px}
-.m.del{font-style:italic;opacity:.65}
-.pic{display:block;max-width:100%;max-height:320px;border-radius:12px;margin-bottom:4px;object-fit:cover}
-.t{display:block;font-size:11px;opacity:.75;margin-top:2px;text-align:right;white-space:nowrap}
-.tk{margin-left:4px;letter-spacing:-2px}
-.tk.seen{color:#7fe3ff;opacity:1}
+.m{position:relative;max-width:78%;padding:8px 12px;border-radius:20px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.m.me{align-self:flex-end;background:var(--grad);color:var(--mine-text);border-bottom-right-radius:6px}
+.m.them{align-self:flex-start;background:var(--theirs);color:var(--theirs-text);border-bottom-left-radius:6px}
+.m.del{font-style:italic;opacity:.65;box-shadow:none;border:1px dashed var(--line)}
+.m.has-img{padding:4px}
+.m.has-img .cap{display:block;padding:4px 8px 0}
+.m.has-img .t{padding:0 8px 2px}
+.m.has-rx{margin-bottom:12px}
+.pic{display:block;max-width:100%;max-height:340px;border-radius:16px;object-fit:cover}
+.t{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:11px;opacity:.8;margin-top:2px;white-space:nowrap}
+.tk{display:inline-flex;align-items:center}
+.tk svg{width:17px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tk.pend svg{width:12px;height:12px}
+.tk.seen{color:#7dffcf;opacity:1}
+.rx{position:absolute;bottom:-12px;right:10px;display:flex;gap:4px;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:1px 7px;font-size:14px;box-shadow:var(--shadow)}
+.m.them .rx{right:auto;left:10px}
+.rx b{font-size:11px;font-weight:500;color:var(--muted);align-self:center}
 .flash{animation:fl 1.4s}
 @keyframes fl{0%,60%{outline:3px solid #f5b301;outline-offset:2px}100%{outline:3px solid transparent}}
-form{display:flex;gap:8px;align-items:center;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
+.burst{position:fixed;z-index:80;font-size:44px;pointer-events:none;transform:translate(-50%,-50%);animation:bu .8s ease-out forwards}
+@keyframes bu{0%{opacity:0;transform:translate(-50%,-30%) scale(.4)}25%{opacity:1;transform:translate(-50%,-60%) scale(1.25)}100%{opacity:0;transform:translate(-50%,-190%) scale(1)}}
+form{display:flex;gap:8px;align-items:center;padding:10px 10px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
 form input[type=text]{flex:1;min-width:0;padding:12px 16px;border:1px solid var(--line);background:var(--bg);border-radius:24px;outline:none}
-form input[type=text]:focus{border-color:var(--mine)}
-form .send{border:0;background:var(--mine);color:var(--mine-text);padding:11px 18px;border-radius:24px;font-weight:600;cursor:pointer}
+form input[type=text]:focus{border-color:var(--accent)}
+.send{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.send svg{width:20px;height:20px;fill:#fff}
+
+/* Reaction bar */
+#rbar{position:fixed;z-index:60;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:5px 8px;box-shadow:0 6px 24px rgba(40,20,120,.25)}
+#rbar button,.rrow button{background:none;border:0;font-size:26px;padding:4px 7px;border-radius:50%;cursor:pointer;transition:transform .12s}
+#rbar button:active,.rrow button:active{transform:scale(1.35)}
+#rbar button.sel,.rrow button.sel{background:var(--bg)}
 
 /* Panel */
 .overlay{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
 .pbar{display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px;background:var(--surface);border-bottom:1px solid var(--line)}
 .pbar h3{font-size:18px;font-weight:600}
 #pBody{flex:1;overflow-y:auto;padding:12px}
-.row{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;text-align:left}
+.row{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer;text-align:left}
 .row small{margin-left:auto;color:var(--muted)}
 .row.danger{color:var(--danger)}
 .lbl{display:block;color:var(--muted);font-size:14px;margin:6px 2px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer}
-.hit{padding:10px 12px;margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:pointer}
+.hit{padding:10px 12px;margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer}
 .hit small{display:block;color:var(--muted)}
 .note{color:var(--muted);font-size:14px;margin:8px 2px}
 
 /* Sheet & lightbox */
 #sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;display:flex;align-items:flex-end;justify-content:center}
-.sbox{width:100%;max-width:720px;background:var(--surface);border-radius:20px 20px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
-.sbox button{display:block;width:100%;padding:14px;border:0;background:none;text-align:left;font-size:16px;cursor:pointer;border-radius:10px}
-.sbox button:hover{background:var(--bg)}
-.sbox button.danger{color:var(--danger)}
-#light{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:90;display:flex;align-items:center;justify-content:center}
+.sbox{width:100%;max-width:720px;background:var(--surface);border-radius:22px 22px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
+.sbox button.opt{display:block;width:100%;padding:14px;border:0;background:none;text-align:left;font-size:16px;cursor:pointer;border-radius:10px}
+.sbox button.opt:hover{background:var(--bg)}
+.sbox button.opt.danger{color:var(--danger)}
+.rrow{display:flex;justify-content:space-around;padding:4px 0 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.info{font-size:13px;color:var(--muted);padding:2px 14px 8px;line-height:1.6;border-bottom:1px solid var(--line);margin-bottom:6px}
+#light{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:90;display:flex;align-items:center;justify-content:center}
 #light img{max-width:100%;max-height:100%}
+.lbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px;z-index:1}
+.lbar button{border:0;border-radius:22px;padding:9px 16px;background:rgba(255,255,255,.18);color:#fff;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -105,7 +132,10 @@ form .send{border:0;background:var(--mine);color:var(--mine-text);padding:11px 1
 
 <div id="chat" class="hidden">
   <header>
-    <h2 id="title">চ্যাট</h2>
+    <div class="who">
+      <span class="dot" id="dot"></span>
+      <div><h2 id="title">চ্যাট</h2><div id="status" class="status">অফলাইন</div></div>
+    </div>
     <button class="icon" id="menuBtn" aria-label="মেনু">⋮</button>
   </header>
   <div id="msgs"></div>
@@ -113,16 +143,21 @@ form .send{border:0;background:var(--mine);color:var(--mine-text);padding:11px 1
     <button type="button" class="icon" id="attachBtn" aria-label="ছবি">📎</button>
     <input id="file" type="file" accept="image/*" class="hidden">
     <input id="text" type="text" placeholder="মেসেজ লিখুন" enterkeyhint="send">
-    <button type="submit" class="send">পাঠান</button>
+    <button type="submit" class="send" aria-label="পাঠান"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg></button>
   </form>
 </div>
+
+<div id="rbar" class="hidden"></div>
 
 <div id="panel" class="overlay hidden">
   <div class="pbar"><button class="icon" id="pBack" aria-label="ফিরুন">←</button><h3 id="pTitle"></h3></div>
   <div id="pBody"></div>
 </div>
 <div id="sheet" class="hidden"></div>
-<div id="light" class="hidden"><img alt=""></div>
+<div id="light" class="hidden">
+  <div class="lbar"><button id="lDl">⬇ ডাউনলোড</button><button id="lX">✕</button></div>
+  <img alt="">
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -139,6 +174,7 @@ const firebaseConfig = {
   appId: "1:742801049611:web:304c3baa78eacdf5f0df0e"
 };
 const UIDS = ['mMmmSKU8lthqr64r660nx8kPIys2', 'bkBV7FBM9pN4am3xQwYzeitBaD83'];
+const REACTIONS = ['😘', '👍', '😔', '🤬', '🙂'];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -146,10 +182,9 @@ const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 
-let me = null, partner = null, msgs = [], nick = {}, clearedAt = 0;
-let unsubs = [], firstLoad = true;
+let me = null, partner = null, msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
+let unsubs = [], timers = [], firstLoad = true;
 
-/* ---------- storage helpers ---------- */
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -178,15 +213,18 @@ $('lockBtn').onclick = async () => {
 };
 $('lockPin').addEventListener('keydown', e => { if (e.key === 'Enter') $('lockBtn').click(); });
 lockIfNeeded();
+
 let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') hiddenAt = Date.now();
-  else {
+  if (document.visibilityState === 'hidden') {
+    hiddenAt = Date.now(); setPresence(false); stopTyping();
+  } else {
     if (hiddenAt && Date.now() - hiddenAt > 30000) lockIfNeeded();
-    markReceived();
+    setPresence(true); markReceived();
   }
 });
 window.addEventListener('focus', () => markReceived());
+window.addEventListener('pagehide', () => setPresence(false));
 
 /* ---------- login ---------- */
 $('loginBtn').onclick = async () => {
@@ -199,6 +237,7 @@ $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn'
 
 onAuthStateChanged(auth, user => {
   unsubs.forEach(u => u()); unsubs = [];
+  timers.forEach(t => clearInterval(t)); timers = [];
   if (user) {
     me = { uid: user.uid };
     partner = UIDS.find(u => u !== user.uid) || UIDS[0];
@@ -207,7 +246,7 @@ onAuthStateChanged(auth, user => {
     firstLoad = true;
     startChat();
   } else {
-    me = null; msgs = [];
+    me = null; msgs = []; partnerPres = null;
     closePanel();
     $('chat').classList.add('hidden');
     $('login').classList.remove('hidden');
@@ -233,6 +272,14 @@ function startChat() {
     clearedAt = d && d.clearedAt ? d.clearedAt.toMillis() : 0;
     render();
   }, e => console.error(e)));
+  // activity
+  unsubs.push(onSnapshot(doc(db, 'presence', partner), s => {
+    partnerPres = s.exists() ? s.data(ST) : null; updateStatus();
+  }, e => console.error(e)));
+  setPresence(document.visibilityState === 'visible');
+  timers.push(setInterval(() => { if (document.visibilityState === 'visible') setPresence(true); }, 30000));
+  timers.push(setInterval(updateStatus, 5000));
+  updateStatus();
 }
 
 function visibleMsgs() {
@@ -253,34 +300,92 @@ function markReceived() {
   if (n) batch.commit().catch(e => console.error(e));
 }
 
+/* ---------- activity (online / typing) ---------- */
+function setPresence(online) {
+  if (!me) return;
+  setDoc(doc(db, 'presence', me.uid), { online, lastSeen: serverTimestamp() }, { merge: true }).catch(() => {});
+}
+let typingTimer = null, lastTypingWrite = 0;
+function stopTyping() {
+  clearTimeout(typingTimer); lastTypingWrite = 0;
+  if (me) setDoc(doc(db, 'presence', me.uid), { typing: false }, { merge: true }).catch(() => {});
+}
+$('text').addEventListener('input', () => {
+  if (!$('text').value) { stopTyping(); return; }
+  const now = Date.now();
+  if (now - lastTypingWrite > 2000 && me) {
+    lastTypingWrite = now;
+    setDoc(doc(db, 'presence', me.uid), { typing: true, typingAt: serverTimestamp() }, { merge: true }).catch(() => {});
+  }
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(stopTyping, 3000);
+});
+function fmtSeen(t) {
+  const d = new Date(t), n = new Date();
+  const tm = d.toLocaleTimeString('bn-BD', { hour: 'numeric', minute: '2-digit' });
+  const day = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diff = Math.round((day(n) - day(d)) / 86400000);
+  if (diff === 0) return 'আজ ' + tm;
+  if (diff === 1) return 'গতকাল ' + tm;
+  return d.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short' }) + ' ' + tm;
+}
+function updateStatus() {
+  const p = partnerPres, now = Date.now();
+  const last = p && p.lastSeen ? p.lastSeen.toMillis() : 0;
+  const online = !!(p && p.online && now - last < 75000);
+  const typing = online && p.typing && p.typingAt && now - p.typingAt.toMillis() < 6000;
+  $('dot').classList.toggle('on', online);
+  const st = $('status');
+  st.className = 'status' + (typing ? ' typing' : online ? ' on' : '');
+  st.textContent = typing ? 'টাইপ করছে…' : online ? 'অ্যাক্টিভ' : last ? 'শেষ দেখা ' + fmtSeen(last) : 'অফলাইন';
+}
+
 /* ---------- render ---------- */
 const timeStr = t => new Date(ms(t)).toLocaleTimeString('bn-BD', { hour: 'numeric', minute: '2-digit' });
+const ICON = {
+  pend: '<svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.8"/><path d="M6 3.4V6l1.8 1.1"/></svg>',
+  one: '<svg viewBox="0 0 19 12"><path d="M3 6.5l3.2 3.2L13 2.5"/></svg>',
+  two: '<svg viewBox="0 0 19 12"><path d="M1.5 6.5l3.2 3.2L11.5 2.5"/><path d="M7.2 9.4l.5.5L14.5 2.5"/></svg>'
+};
 
 function bubble(m) {
   const mine = m.uid === me.uid;
   const b = el('div', 'm ' + (mine ? 'me' : 'them'));
-  b.id = 'm-' + m.id;
+  b.id = 'm-' + m.id; b.dataset.id = m.id;
   if (m.deleted) {
     b.classList.add('del'); b.appendChild(document.createTextNode('🚫 এই মেসেজ ডিলিট করা হয়েছে'));
   } else {
     if (m.image) {
-      const i = el('img', 'pic'); i.src = m.image; i.alt = 'ছবি';
-      i.onclick = e => { e.stopPropagation(); openLight(m.image); };
+      b.classList.add('has-img');
+      const i = el('img', 'pic'); i.src = m.image; i.alt = 'ছবি'; i.draggable = false;
       b.appendChild(i);
     }
-    if (m.text) b.appendChild(document.createTextNode(m.text));
+    if (m.text) {
+      if (m.image) b.appendChild(el('span', 'cap', m.text)); else b.appendChild(document.createTextNode(m.text));
+    }
   }
-  const t = el('span', 't', timeStr(m.createdAt));
+  const t = el('span', 't');
+  t.appendChild(document.createTextNode(timeStr(m.createdAt)));
   if (mine && !m.deleted) {
     const tk = el('span', 'tk');
-    if (m.pending) tk.textContent = '🕓';
-    else if (m.seenAt) { tk.textContent = '✓✓'; tk.classList.add('seen'); }
-    else if (m.deliveredAt) tk.textContent = '✓✓';
-    else tk.textContent = '✓';
+    if (m.pending) { tk.classList.add('pend'); tk.innerHTML = ICON.pend; }
+    else if (m.seenAt) { tk.classList.add('seen'); tk.innerHTML = ICON.two; }
+    else if (m.deliveredAt) tk.innerHTML = ICON.two;
+    else tk.innerHTML = ICON.one;
     t.appendChild(tk);
   }
   b.appendChild(t);
-  b.onclick = () => openActions(m);
+  const rx = m.reactions && !m.deleted ? Object.values(m.reactions) : [];
+  if (rx.length) {
+    b.classList.add('has-rx');
+    const counts = {}; rx.forEach(e => counts[e] = (counts[e] || 0) + 1);
+    const wrap = el('span', 'rx');
+    Object.keys(counts).forEach(e => {
+      wrap.appendChild(document.createTextNode(e));
+      if (counts[e] > 1) wrap.appendChild(el('b', '', counts[e]));
+    });
+    b.appendChild(wrap);
+  }
   return b;
 }
 
@@ -308,7 +413,7 @@ $('sendForm').onsubmit = e => {
   e.preventDefault();
   const text = $('text').value.trim();
   if (!text) return;
-  $('text').value = '';
+  $('text').value = ''; stopTyping();
   send(text);
 };
 $('attachBtn').onclick = () => $('file').click();
@@ -317,7 +422,7 @@ $('file').onchange = async e => {
   if (!f) return;
   try {
     const url = await toDataUrl(f);
-    const caption = $('text').value.trim(); $('text').value = '';
+    const caption = $('text').value.trim(); $('text').value = ''; stopTyping();
     send(caption, url);
   } catch (err) { alert('ছবিটা পাঠানো যায়নি (বেশি বড় হতে পারে)।'); }
 };
@@ -339,11 +444,12 @@ function toDataUrl(file) {
 }
 
 /* ---------- sheet / lightbox ---------- */
-function sheet(items) {
+function sheet(items, header) {
   const s = $('sheet'); s.innerHTML = '';
   const box = el('div', 'sbox');
+  if (header) box.appendChild(header);
   items.concat([{ label: 'বাতিল' }]).forEach(it => {
-    const b = el('button', it.danger ? 'danger' : '', it.label);
+    const b = el('button', 'opt' + (it.danger ? ' danger' : ''), it.label);
     b.onclick = () => { closeSheet(); if (it.fn) it.fn(); };
     box.appendChild(b);
   });
@@ -351,18 +457,112 @@ function sheet(items) {
   s.onclick = e => { if (e.target === s) closeSheet(); };
 }
 function closeSheet() { $('sheet').classList.add('hidden'); }
-function openLight(src) { $('light').querySelector('img').src = src; $('light').classList.remove('hidden'); }
-$('light').onclick = () => $('light').classList.add('hidden');
 
-/* ---------- message actions ---------- */
+let lightSrc = '';
+function openLight(src) { lightSrc = src; $('light').querySelector('img').src = src; $('light').classList.remove('hidden'); }
+function closeLight() { $('light').classList.add('hidden'); }
+$('lX').onclick = closeLight;
+$('light').onclick = e => { if (e.target.id === 'light') closeLight(); };
+$('lDl').onclick = () => {
+  const a = document.createElement('a');
+  a.href = lightSrc; a.download = 'photo-' + Date.now() + '.jpg';
+  document.body.appendChild(a); a.click(); a.remove();
+};
+
+/* ---------- reactions ---------- */
+function toggleReaction(m, emoji) {
+  if (m.pending || m.deleted) return;
+  const cur = m.reactions && m.reactions[me.uid];
+  updateDoc(doc(db, 'messages', m.id), { ['reactions.' + me.uid]: cur === emoji ? deleteField() : emoji }).catch(console.error);
+}
+function showRbar(m, node) {
+  const bar = $('rbar'); bar.innerHTML = '';
+  const cur = m.reactions && m.reactions[me.uid];
+  REACTIONS.forEach(e => {
+    const b = el('button', cur === e ? 'sel' : '', e);
+    b.onclick = ev => { ev.stopPropagation(); hideRbar(); toggleReaction(m, e); };
+    bar.appendChild(b);
+  });
+  bar.classList.remove('hidden');
+  const r = node.getBoundingClientRect(), w = bar.offsetWidth, h = bar.offsetHeight;
+  let top = r.top - h - 8; if (top < 70) top = r.bottom + 8;
+  let left = r.left + r.width / 2 - w / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+  bar.style.top = top + 'px'; bar.style.left = left + 'px';
+}
+function hideRbar() { $('rbar').classList.add('hidden'); }
+document.addEventListener('click', e => { if (!e.target.closest('#rbar')) hideRbar(); }, true);
+function burst(x, y) {
+  const b = el('div', 'burst', '❤️'); b.style.left = x + 'px'; b.style.top = y + 'px';
+  document.body.appendChild(b); setTimeout(() => b.remove(), 850);
+}
+
+/* ---------- gestures: tap = reactions, double tap = ❤️, long press = actions ---------- */
+const box = $('msgs');
+let pressTimer = null, longFired = false, sx = 0, sy = 0, lastTap = { id: null, t: 0 }, tapTimer = null;
+const findMsg = node => { const b = node.closest && node.closest('.m'); return b ? msgs.find(x => x.id === b.dataset.id) : null; };
+
+box.addEventListener('pointerdown', e => {
+  const m = findMsg(e.target); if (!m || m.pending) return;
+  longFired = false; sx = e.clientX; sy = e.clientY;
+  clearTimeout(pressTimer);
+  pressTimer = setTimeout(() => { longFired = true; hideRbar(); if (navigator.vibrate) navigator.vibrate(15); openActions(m); }, 450);
+});
+box.addEventListener('pointermove', e => { if (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy) > 10) clearTimeout(pressTimer); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => box.addEventListener(ev, () => clearTimeout(pressTimer)));
+box.addEventListener('contextmenu', e => { if (e.target.closest('.m')) e.preventDefault(); });
+box.addEventListener('click', e => {
+  const m = findMsg(e.target); if (!m) return;
+  if (longFired) { longFired = false; return; }
+  if (m.pending) return;
+  if (e.target.closest('.pic')) { openLight(m.image); return; }
+  if (m.deleted) return;
+  const now = Date.now();
+  if (lastTap.id === m.id && now - lastTap.t < 300) {
+    clearTimeout(tapTimer); lastTap = { id: null, t: 0 };
+    burst(e.clientX, e.clientY); toggleReaction(m, '❤️'); return;
+  }
+  lastTap = { id: m.id, t: now };
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => {
+    const n = document.getElementById('m-' + m.id), cur = msgs.find(x => x.id === m.id);
+    if (n && cur) showRbar(cur, n);
+  }, 280);
+});
+
+/* ---------- message actions (long press) ---------- */
+const fullTime = t => t ? new Date(ms(t)).toLocaleString('bn-BD', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—';
+function delForAll(m) {
+  const txt = m.uid === me.uid ? 'এই মেসেজ সবার জন্য ডিলিট হবে।' : 'অন্যজনের এই মেসেজ দুজনের জন্যই ডিলিট হয়ে যাবে। ফিরিয়ে আনা যাবে না।';
+  if (!confirm(txt + ' নিশ্চিত?')) return;
+  updateDoc(doc(db, 'messages', m.id), { deleted: true, text: '', image: deleteField(), reactions: deleteField() }).catch(console.error);
+}
 function openActions(m) {
+  const header = el('div');
+  if (!m.deleted) {
+    const rr = el('div', 'rrow'); const cur = m.reactions && m.reactions[me.uid];
+    REACTIONS.forEach(e => {
+      const b = el('button', cur === e ? 'sel' : '', e);
+      b.onclick = () => { closeSheet(); toggleReaction(m, e); };
+      rr.appendChild(b);
+    });
+    header.appendChild(rr);
+    if (m.uid === me.uid) {
+      const info = el('div', 'info');
+      info.innerHTML = '';
+      [['পাঠানো', m.createdAt], ['ডেলিভারড', m.deliveredAt], ['সিন', m.seenAt]].forEach(([k, v]) => {
+        info.appendChild(document.createTextNode(k + ': ' + fullTime(v))); info.appendChild(document.createElement('br'));
+      });
+      header.appendChild(info);
+    }
+  }
   const items = [];
+  if (!m.deleted && m.image) items.push({ label: 'ছবি ডাউনলোড', fn: () => { openLight(m.image); $('lDl').click(); closeLight(); } });
   if (!m.deleted && m.text) items.push({ label: 'কপি', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
   items.push({ label: 'আমার জন্য ডিলিট', danger: true, fn: () =>
     updateDoc(doc(db, 'messages', m.id), { hiddenFor: arrayUnion(me.uid) }).catch(console.error) });
-  if (m.uid === me.uid && !m.deleted) items.push({ label: 'সবার জন্য ডিলিট', danger: true, fn: () =>
-    updateDoc(doc(db, 'messages', m.id), { deleted: true, text: '', image: deleteField() }).catch(console.error) });
-  sheet(items);
+  if (!m.deleted) items.push({ label: 'সবার জন্য ডিলিট', danger: true, fn: () => delForAll(m) });
+  sheet(items, header);
 }
 
 /* ---------- panel ---------- */
@@ -390,7 +590,11 @@ function showHome() {
     { label: 'আমার জন্য ক্লিয়ার', danger: true, fn: clearForMe },
     { label: 'সবার জন্য ক্লিয়ার', danger: true, fn: clearForAll }
   ]), '', true));
-  b.appendChild(row('↪', 'বের হন', () => { closePanel(); signOut(auth); }));
+  b.appendChild(row('↪', 'বের হন', async () => {
+    closePanel(); stopTyping();
+    try { await setDoc(doc(db, 'presence', me.uid), { online: false, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
+    signOut(auth);
+  }));
 }
 
 function showNick() {
