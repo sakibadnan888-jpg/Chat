@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#7c5cf5">
 <title>Our Chat</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Our Chat">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -25,23 +31,59 @@ button,input{font:inherit;color:inherit}
 .hidden{display:none!important}
 
 /* Login & lock */
-#login,#lock{height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:400px;margin:0 auto}
+#lock{height:100%;display:flex;flex-direction:column;justify-content:center;padding:24px;max-width:400px;margin:0 auto}
 #lock{position:fixed;inset:0;max-width:none;align-items:center;background:var(--bg);z-index:100}
 #lock>*{width:100%;max-width:340px}
-#login h1,#lock h1{font-size:30px;font-weight:600;margin-bottom:6px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
-#login p,#lock p{color:var(--muted);margin-bottom:24px}
+#lock h1{font-size:30px;font-weight:600;margin-bottom:6px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
+#lock p{color:var(--muted);margin-bottom:24px}
 .field{width:100%;padding:14px;margin-bottom:12px;border:1px solid var(--line);background:var(--surface);border-radius:14px;outline:none}
 .field:focus{border-color:var(--accent)}
 .primary{width:100%;padding:14px;border:0;border-radius:14px;background:var(--grad);color:#fff;font-weight:600;cursor:pointer}
 .primary:disabled{opacity:.6}
 .err{color:var(--danger);font-size:14px;min-height:20px;margin-bottom:10px}
 
+/* Premium login */
+#login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;
+  background:radial-gradient(900px 500px at 0% 0%,rgba(139,92,246,.28),transparent 60%),radial-gradient(900px 500px at 100% 100%,rgba(91,141,239,.28),transparent 60%),var(--bg)}
+.orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;animation:flt 12s ease-in-out infinite;pointer-events:none}
+.o1{width:260px;height:260px;background:#8b5cf6;top:-70px;left:-70px}
+.o2{width:300px;height:300px;background:#5b8def;bottom:-90px;right:-90px;animation-delay:-5s}
+@keyframes flt{50%{transform:translate(30px,25px) scale(1.08)}}
+.lcard{position:relative;width:100%;max-width:380px;padding:30px 22px 20px;border-radius:28px;background:rgba(255,255,255,.74);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.6);box-shadow:0 24px 60px rgba(60,40,140,.25);animation:rise .6s ease both}
+:root[data-theme="dark"] .lcard{background:rgba(20,22,38,.72);border-color:rgba(255,255,255,.08)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.logo{width:66px;height:66px;border-radius:21px;background:var(--grad);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(124,92,245,.45)}
+.logo svg{width:36px;height:36px}
+.lcard h1{font-size:26px;font-weight:600;text-align:center;margin-bottom:4px}
+.lcard .sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14.5px}
+.inp{display:flex;align-items:center;gap:10px;padding:0 12px 0 14px;height:52px;border:1px solid var(--line);background:var(--surface);border-radius:14px;margin-bottom:12px;transition:border-color .2s,box-shadow .2s}
+.inp:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(124,92,245,.16)}
+.inp>svg{width:19px;height:19px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.inp input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;font-size:16px}
+.eye{border:0;background:none;padding:6px;cursor:pointer;display:flex}
+.eye svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.chk{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;margin:2px 2px 10px;cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--accent)}
+.shake{animation:shk .4s}
+@keyframes shk{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+#loginBtn{height:52px;box-shadow:0 10px 22px rgba(124,92,245,.38)}
+.spin{display:none;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;margin:0 auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+#loginBtn.busy .spin{display:block}
+#loginBtn.busy .btxt{display:none}
+.lfoot{text-align:center;color:var(--muted);font-size:12.5px;margin-top:16px}
+
 /* Chat */
 #chat{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;background:var(--bg)}
 header{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 8px 10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
 .who{display:flex;align-items:center;gap:10px;min-width:0}
-.dot{width:12px;height:12px;border-radius:50%;background:var(--line);flex:none;transition:background .3s}
-.dot.on{background:var(--green);box-shadow:0 0 0 4px rgba(34,197,94,.2)}
+.av{position:relative;flex:none;width:42px;height:42px;cursor:pointer}
+.avi{width:42px;height:42px;border-radius:50%;background:var(--grad) center/cover no-repeat;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px;overflow:hidden}
+.avi.big{width:64px;height:64px;font-size:26px;flex:none;cursor:pointer}
+.avi.xl{width:120px;height:120px;font-size:44px}
+.dot{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#a7a5b8;border:2.5px solid var(--surface);transition:background .3s}
+.dot.on{background:var(--green)}
 header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .status{font-size:12.5px;color:var(--muted);line-height:1.2}
 .status.on{color:var(--green)}
@@ -105,6 +147,9 @@ form input[type=text]:focus{border-color:var(--accent)}
 .card small{display:block;color:var(--muted);font-size:12px}
 .card div{margin-bottom:6px;word-break:break-all}
 .card div:last-child{margin-bottom:0}
+.card.prof{display:flex;align-items:center;gap:14px}
+.card .avi{margin-bottom:0}
+.card.prof>div:last-child{min-width:0}
 .row{display:flex;align-items:center;gap:12px;width:100%;padding:14px;margin-bottom:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer;text-align:left}
 .row small{margin-left:auto;color:var(--muted)}
 .row.danger{color:var(--danger)}
@@ -144,18 +189,27 @@ form input[type=text]:focus{border-color:var(--accent)}
 </div>
 
 <div id="login" class="hidden">
-  <h1>Our Chat</h1>
-  <p>Just the two of us.</p>
-  <input id="email" class="field" type="email" placeholder="Email" autocomplete="username">
-  <input id="pass" class="field" type="password" placeholder="Password" autocomplete="current-password">
-  <div id="err" class="err"></div>
-  <button class="primary" id="loginBtn">Sign in</button>
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="lcard">
+    <div class="logo"><svg viewBox="0 0 24 24"><path fill="#fff" d="M5.5 3h13A3.5 3.5 0 0122 6.5v8a3.5 3.5 0 01-3.5 3.5H11l-4.6 3.6c-.6.5-1.4.1-1.4-.7V18A3.5 3.5 0 012 14.5v-8A3.5 3.5 0 015.5 3z"/><circle cx="8" cy="10.5" r="1.3" fill="#7c5cf5"/><circle cx="12" cy="10.5" r="1.3" fill="#7c5cf5"/><circle cx="16" cy="10.5" r="1.3" fill="#7c5cf5"/></svg></div>
+    <h1>Welcome back</h1>
+    <div class="sub">Private chat, just for two.</div>
+    <label class="inp"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg>
+      <input id="email" type="email" placeholder="Email address" autocomplete="username" enterkeyhint="next"></label>
+    <label class="inp"><svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="3"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/></svg>
+      <input id="pass" type="password" placeholder="Password" autocomplete="current-password" enterkeyhint="done">
+      <button type="button" class="eye" id="eye" aria-label="Show password"></button></label>
+    <label class="chk"><input type="checkbox" id="keep" checked><span>Keep me signed in on this phone</span></label>
+    <div id="err" class="err"></div>
+    <button class="primary" id="loginBtn" type="button"><span class="btxt">Sign in</span><span class="spin"></span></button>
+    <div class="lfoot">🔒 Private · invited users only</div>
+  </div>
 </div>
 
 <div id="chat" class="hidden">
   <header>
     <div class="who">
-      <span class="dot" id="dot"></span>
+      <div class="av" id="av"><div class="avi" id="avi"></div><span class="dot" id="dot"></span></div>
       <div><h2 id="title">Chat</h2><div id="status" class="status">Offline</div></div>
     </div>
     <button class="icon" id="menuBtn" aria-label="Menu">⋮</button>
@@ -184,7 +238,7 @@ form input[type=text]:focus{border-color:var(--accent)}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
          doc, setDoc, updateDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -199,6 +253,10 @@ const firebaseConfig = {
 const UIDS = ['mMmmSKU8lthqr64r660nx8kPIys2', 'bkBV7FBM9pN4am3xQwYzeitBaD83'];
 const REACTIONS = ['😘', '👍', '😔', '🤬', '🙂'];
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -207,6 +265,7 @@ const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) 
 
 let me = null, partner = null, myEmail = '', msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
 let unsubs = [], timers = [], firstLoad = true;
+let profiles = {};
 let replyTo = null, editing = null;
 
 const store = {
@@ -223,6 +282,18 @@ function toggleTheme() {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   root.dataset.theme = next; store.set('theme', next);
 }
+
+/* ---------- profile photos ---------- */
+const initialOf = t => (t || '').trim().charAt(0).toUpperCase() || '•';
+function setAv(node, photo, letter) {
+  node.style.backgroundImage = photo ? 'url("' + photo + '")' : '';
+  node.textContent = photo ? '' : letter;
+}
+function applyAvatars() {
+  if (!partner) return;
+  setAv($('avi'), profiles[partner], initialOf(nick[partner] || (partnerPres && partnerPres.email)));
+}
+$('av').onclick = () => { if (profiles[partner]) openLight(profiles[partner]); };
 
 /* ---------- app lock ---------- */
 async function sha(s) {
@@ -252,13 +323,35 @@ window.addEventListener('focus', () => markReceived());
 window.addEventListener('pagehide', () => setPresence(false));
 
 /* ---------- login ---------- */
-$('loginBtn').onclick = async () => {
-  $('err').textContent = ''; $('loginBtn').disabled = true;
-  try { await signInWithEmailAndPassword(auth, $('email').value.trim(), $('pass').value); }
-  catch (e) { $('err').textContent = 'Wrong email or password.'; }
-  $('loginBtn').disabled = false;
+const EYE = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 6.1A10 10 0 0112 6c6.4 0 10 6 10 6a17 17 0 01-3.2 3.9M6.5 7.6C3.9 9.3 2 12 2 12s3.6 6 10 6c1.5 0 2.8-.3 4-.8"/><path d="M9.9 9.9a3 3 0 004.2 4.2"/></svg>';
+$('eye').innerHTML = EYE;
+$('eye').onclick = () => {
+  const p = $('pass'), show = p.type === 'password';
+  p.type = show ? 'text' : 'password';
+  $('eye').innerHTML = show ? EYE_OFF : EYE;
 };
-$('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+function shake() {
+  document.querySelectorAll('#login .inp').forEach(n => { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); });
+}
+// Sign-in happens ONLY when the button is pressed (no auto-login, no Enter-key submit).
+$('loginBtn').onclick = async () => {
+  const em = $('email').value.trim(), pw = $('pass').value;
+  $('err').textContent = '';
+  if (!em || !pw) { $('err').textContent = 'Enter your email and password.'; shake(); return; }
+  $('loginBtn').disabled = true; $('loginBtn').classList.add('busy');
+  try {
+    await setPersistence(auth, $('keep').checked ? browserLocalPersistence : browserSessionPersistence);
+    await signInWithEmailAndPassword(auth, em, pw);
+  } catch (e) {
+    const c = e && e.code;
+    $('err').textContent = c === 'auth/network-request-failed' ? 'No connection. Please try again.'
+      : c === 'auth/too-many-requests' ? 'Too many attempts. Try again later.'
+      : 'Wrong email or password.';
+    shake();
+  }
+  $('loginBtn').disabled = false; $('loginBtn').classList.remove('busy');
+};
 
 onAuthStateChanged(auth, user => {
   unsubs.forEach(u => u()); unsubs = [];
@@ -271,7 +364,7 @@ onAuthStateChanged(auth, user => {
     firstLoad = true;
     startChat();
   } else {
-    me = null; msgs = []; partnerPres = null; myEmail = '';
+    me = null; msgs = []; partnerPres = null; myEmail = ''; profiles = {};
     clearCtx(); closePanel();
     $('chat').classList.add('hidden');
     $('login').classList.remove('hidden');
@@ -291,7 +384,7 @@ function startChat() {
   unsubs.push(onSnapshot(doc(db, 'meta', 'settings'), s => {
     nick = (s.exists() && s.data().nick) || {};
     $('title').textContent = nick[partner] || 'Chat';
-    render();
+    applyAvatars(); render();
   }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'users', me.uid), s => {
     const d = s.exists() ? s.data(ST) : null;
@@ -299,8 +392,11 @@ function startChat() {
     render();
   }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'presence', partner), s => {
-    partnerPres = s.exists() ? s.data(ST) : null; updateStatus();
+    partnerPres = s.exists() ? s.data(ST) : null; updateStatus(); applyAvatars();
   }, e => console.error(e)));
+  [me.uid, partner].forEach(u => unsubs.push(onSnapshot(doc(db, 'profiles', u), s => {
+    profiles[u] = s.exists() ? (s.data().photo || '') : ''; applyAvatars();
+  }, e => console.error(e))));
   setPresence(document.visibilityState === 'visible');
   timers.push(setInterval(() => { if (document.visibilityState === 'visible') setPresence(true); }, 30000));
   timers.push(setInterval(updateStatus, 5000));
@@ -696,11 +792,14 @@ function row(icon, label, fn, extra, danger) {
 
 function showHome() {
   const b = setView('home', 'Details');
-  const card = el('div', 'card');
+  const card = el('div', 'card prof');
+  const av = el('div', 'avi big'); setAv(av, profiles[me.uid], initialOf(myEmail)); av.onclick = showPhoto;
+  const info = el('div');
   const a = el('div'); a.appendChild(el('small', '', 'Signed in as')); a.appendChild(document.createTextNode(myEmail || '—'));
   const c = el('div'); c.appendChild(el('small', '', 'Other person')); c.appendChild(document.createTextNode((partnerPres && partnerPres.email) || '—'));
-  card.appendChild(a); card.appendChild(c); b.appendChild(card);
+  info.appendChild(a); info.appendChild(c); card.appendChild(av); card.appendChild(info); b.appendChild(card);
   const imgs = visibleMsgs().filter(m => m.image && !m.deleted).length;
+  b.appendChild(row('📷', 'Profile photo', showPhoto));
   b.appendChild(row('👤', 'Nicknames', showNick));
   b.appendChild(row('🖼', 'All attachments', showMedia, String(imgs)));
   b.appendChild(row('🔍', 'Search messages', showSearch));
@@ -715,6 +814,49 @@ function showHome() {
     try { await setDoc(doc(db, 'presence', me.uid), { online: false, lastSeen: serverTimestamp() }, { merge: true }); } catch (e) {}
     signOut(auth);
   }));
+}
+
+function squarePhoto(file, size = 256) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const s = Math.min(img.width, img.height);
+      const c = document.createElement('canvas'); c.width = c.height = size;
+      c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+      let q = 0.82, out = c.toDataURL('image/jpeg', q);
+      while (out.length > 150000 && q > 0.4) { q -= 0.1; out = c.toDataURL('image/jpeg', q); }
+      URL.revokeObjectURL(url);
+      out.length > 190000 ? rej(new Error('big')) : res(out);
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+
+function showPhoto() {
+  const b = setView('photo', 'Profile photo');
+  const wrap = el('div'); wrap.style.cssText = 'display:flex;justify-content:center;margin:14px 0 18px';
+  const big = el('div', 'avi xl'); setAv(big, profiles[me.uid], initialOf(myEmail)); wrap.appendChild(big); b.appendChild(wrap);
+  b.appendChild(el('div', 'note', 'Your photo is shown next to your name on the other person’s phone. Only the two of you can see it.'));
+  const inp = el('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.className = 'hidden';
+  inp.onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const url = await squarePhoto(f);
+      await setDoc(doc(db, 'profiles', me.uid), { photo: url, updatedAt: serverTimestamp() });
+      showPhoto();
+    } catch (err) { alert('Could not save that photo.'); console.error(err); }
+  };
+  b.appendChild(inp);
+  const pick = el('button', 'primary', profiles[me.uid] ? 'Change photo' : 'Choose photo');
+  pick.onclick = () => inp.click(); b.appendChild(pick);
+  if (profiles[me.uid]) {
+    const rm = el('button', 'row danger', 'Remove photo'); rm.style.marginTop = '12px';
+    rm.onclick = async () => {
+      try { await setDoc(doc(db, 'profiles', me.uid), { photo: '', updatedAt: serverTimestamp() }); showPhoto(); }
+      catch (err) { alert('Could not remove the photo.'); console.error(err); }
+    };
+    b.appendChild(rm);
+  }
 }
 
 function showNick() {
