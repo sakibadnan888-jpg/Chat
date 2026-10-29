@@ -27,7 +27,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15.5px;overflow:hidden;touch-action:manipulation}
-button,input{font:inherit;color:inherit}
+button,input,textarea{font:inherit;color:inherit}
 .hidden{display:none!important}
 
 /* Login & lock */
@@ -91,13 +91,12 @@ header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;ov
 .icon{background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
 #msgs{flex:1;min-height:0;position:relative;z-index:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px;touch-action:pan-y}
 .empty{margin:auto;color:var(--muted);text-align:center}
-.m{font-size:var(--msg-fs,15.5px);position:relative;max-width:78%;padding:8px 12px;border-radius:20px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.m{display:flow-root;font-size:var(--msg-fs,15.5px);position:relative;max-width:78%;padding:8px 12px;border-radius:20px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .m.me{align-self:flex-end;background:var(--grad);color:var(--mine-text);border-bottom-right-radius:6px}
 .m.them{align-self:flex-start;background:var(--theirs);color:var(--theirs-text);border-bottom-left-radius:6px}
 .m.del{font-style:italic;opacity:.65;box-shadow:none;border:1px dashed var(--line)}
 .m.has-img{padding:4px}
-.m.has-img .cap{display:block;padding:4px 8px 0}
-.m.has-img .t{padding:0 8px 2px}
+.m.has-img .cap{display:flow-root;padding:4px 8px 2px}
 .m.has-img .quote{margin:2px 4px 6px}
 .m.has-rx{margin-bottom:12px}
 .pic{display:block;max-width:100%;max-height:340px;border-radius:16px;object-fit:cover}
@@ -105,7 +104,8 @@ header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;ov
 .m.me .quote{border-left-color:rgba(255,255,255,.85);background:rgba(255,255,255,.18)}
 .quote b{display:block;font-weight:600;font-size:12.5px}
 .quote span{display:block;opacity:.85;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.t{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-size:11px;opacity:.8;margin-top:2px;white-space:nowrap}
+.t{float:right;display:flex;align-items:center;gap:4px;font-size:11px;line-height:1;opacity:.8;margin:9px 0 -3px 12px;white-space:nowrap;position:relative;top:1px}
+.m.img-only .t{float:none;position:absolute;right:10px;bottom:9px;margin:0;top:auto;background:rgba(0,0,0,.5);color:#fff;border-radius:10px;padding:3px 8px;opacity:1}
 .ed{text-decoration:underline dotted;cursor:pointer;margin-right:2px}
 .tk{display:inline-flex;align-items:center}
 .tk svg{width:17px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -127,16 +127,18 @@ header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;ov
 
 form{display:flex;gap:8px;align-items:flex-end;padding:10px 10px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
 #ctx:not(.hidden)+form{border-top:0}
-form textarea{flex:1;min-width:0;display:block;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:22px;outline:none;resize:none;max-height:130px;line-height:1.4;font-size:var(--msg-fs,15.5px);overflow-y:auto}
+form textarea{flex:1;min-width:0;display:block;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:22px;outline:none;resize:none;max-height:130px;min-height:46px;line-height:1.4;font-size:var(--msg-fs,15.5px);overflow-y:hidden;scrollbar-width:thin}
 form textarea:focus{border-color:var(--accent)}
 .send{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .send svg{width:20px;height:20px;fill:#fff}
 
 /* Reaction bar */
-#rbar{position:fixed;z-index:60;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:5px 8px;box-shadow:0 6px 24px rgba(40,20,120,.25)}
-#rbar button,.rrow button{background:none;border:0;font-size:26px;padding:4px 7px;border-radius:50%;cursor:pointer;transition:transform .12s}
-#rbar button:active,.rrow button:active{transform:scale(1.35)}
-#rbar button.sel,.rrow button.sel{background:var(--bg)}
+#rbar{position:fixed;z-index:60;display:flex;gap:2px;padding:6px 8px;border-radius:32px;background:var(--surface);border:1px solid var(--line);box-shadow:0 14px 44px rgba(40,20,120,.35);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:rbIn .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes rbIn{from{opacity:0;transform:translateY(10px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes popIn{from{opacity:0;transform:scale(.3) translateY(8px)}to{opacity:1;transform:none}}
+#rbar button,.rrow button{background:none;border:0;font-size:30px;line-height:1.15;padding:4px 7px;border-radius:50%;cursor:pointer;transition:transform .15s;animation:popIn .34s both}
+#rbar button:active,.rrow button:active{transform:scale(1.4)}
+#rbar button.sel,.rrow button.sel{background:rgba(124,92,245,.16);box-shadow:inset 0 0 0 2px var(--accent)}
 
 /* Panel */
 .overlay{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
@@ -183,13 +185,47 @@ form textarea:focus{border-color:var(--accent)}
 .fprev .m{cursor:default}
 
 /* Sheet & lightbox */
-#sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:70;display:flex;align-items:flex-end;justify-content:center}
-.sbox{width:100%;max-width:720px;max-height:85%;overflow-y:auto;background:var(--surface);border-radius:22px 22px 0 0;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 12px)}
-.sbox button.opt{display:block;width:100%;padding:14px;border:0;background:none;text-align:left;font-size:16px;cursor:pointer;border-radius:10px}
-.sbox button.opt:hover{background:var(--bg)}
+#sheet{position:fixed;inset:0;background:rgba(12,8,36,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:70;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.sbox{width:100%;max-width:720px;max-height:88%;overflow-y:auto;background:var(--bg);border-radius:28px 28px 0 0;padding:8px 14px calc(env(safe-area-inset-bottom,0px) + 14px);box-shadow:0 -10px 40px rgba(0,0,0,.28);animation:slideUp .28s cubic-bezier(.2,.9,.3,1)}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 12px}
+.sgroup{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:10px}
+.sbox button.opt{display:flex;align-items:center;gap:14px;width:100%;padding:12px 16px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font-size:16px;cursor:pointer;transition:background .15s}
+.sgroup button.opt:last-child{border-bottom:0}
+.sbox button.opt:active{background:var(--bg)}
 .sbox button.opt.danger{color:var(--danger)}
-.rrow{display:flex;justify-content:space-around;padding:4px 0 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
-.info{font-size:13px;color:var(--muted);padding:2px 14px 8px;line-height:1.6;border-bottom:1px solid var(--line);margin-bottom:6px}
+.sbox .ic{width:34px;height:34px;border-radius:11px;background:rgba(124,92,245,.13);display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;font-style:normal}
+.sbox button.opt.danger .ic{background:rgba(229,72,77,.13)}
+.sbox button.opt.cancel{justify-content:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;font-weight:600;margin-top:2px}
+.spv{display:flex;flex-direction:column;gap:2px;padding:10px 14px;margin-bottom:10px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;font-size:14px}
+.spv b{font-size:12.5px;color:var(--accent);font-weight:600}
+.spv span{color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.rrow{display:flex;justify-content:space-around;padding:8px 6px;margin-bottom:10px;background:var(--surface);border:1px solid var(--line);border-radius:32px;box-shadow:var(--shadow)}
+.sinfo{display:flex;margin-bottom:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.sinfo div{flex:1;padding:8px 6px;text-align:center;font-size:12px;color:var(--muted);border-right:1px solid var(--line)}
+.sinfo div:last-child{border-right:0}
+.sinfo b{display:block;color:var(--text);font-size:13px;font-weight:600;margin-top:2px}
+#dlg{position:fixed;inset:0;z-index:95;background:rgba(12,8,36,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease}
+.dcard{width:100%;max-width:340px;background:var(--surface);border-radius:26px;padding:24px 20px 16px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:slideUp .26s cubic-bezier(.2,.9,.3,1.1)}
+.dico{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;background:rgba(229,72,77,.13);display:flex;align-items:center;justify-content:center;font-size:30px}
+.dcard h4{font-size:18px;font-weight:600;margin-bottom:6px}
+.dcard p{color:var(--muted);font-size:14.5px;line-height:1.5;margin-bottom:18px}
+.dbtns{display:flex;gap:10px}
+.dbtns button{flex:1;height:46px;border:0;border-radius:14px;font-weight:600;cursor:pointer;background:var(--bg)}
+.dbtns .yes{background:var(--danger);color:#fff}
+
+/* Multi-select */
+#selbar{display:none;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px 10px 6px;background:var(--surface);border-bottom:1px solid var(--line)}
+#chat.selecting #selbar{display:flex}
+#chat.selecting header,#chat.selecting form,#chat.selecting #ctx{display:none}
+#selbar b{flex:1;font-size:17px;font-weight:600}
+#selbar .pill{border:0;border-radius:18px;padding:9px 16px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--text)}
+#selbar .pill.del{background:rgba(229,72,77,.14);color:var(--danger)}
+#selbar .pill:disabled{opacity:.4}
+.sel-on .m::before{content:'';position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid var(--line);z-index:3}
+.sel-on .m.sel::before{content:'✓';display:flex;align-items:center;justify-content:center;background:var(--grad);border-color:transparent;color:#fff;font-size:13px;font-weight:700}
+.m.sel{outline:2px solid var(--accent);outline-offset:1px}
 .ver{padding:10px 14px;border-bottom:1px solid var(--line);white-space:pre-wrap;word-wrap:break-word}
 .ver small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 .ver.cur{border-left:3px solid var(--accent)}
@@ -229,6 +265,12 @@ form textarea:focus{border-color:var(--accent)}
 </div>
 
 <div id="chat" class="hidden">
+  <div id="selbar">
+    <button class="icon" id="selX" aria-label="Cancel selection">✕</button>
+    <b id="selCount">0 selected</b>
+    <button class="pill" id="selAll">All</button>
+    <button class="pill del" id="selDel">Delete</button>
+  </div>
   <header>
     <div class="who">
       <div class="av" id="av"><div class="avi" id="avi"></div><span class="dot" id="dot"></span></div>
@@ -257,6 +299,7 @@ form textarea:focus{border-color:var(--accent)}
   <div id="pBody"></div>
 </div>
 <div id="sheet" class="hidden"></div>
+<div id="dlg" class="hidden"><div class="dcard"><div class="dico" id="dIco">🗑️</div><h4 id="dTitle"></h4><p id="dText"></p><div class="dbtns"><button id="dNo">Cancel</button><button id="dYes" class="yes">Delete</button></div></div></div>
 <div id="light" class="hidden">
   <div class="lbar"><button id="lDl">⬇ Download</button><button id="lX">✕</button></div>
   <img alt="">
@@ -418,7 +461,7 @@ onAuthStateChanged(auth, user => {
     startChat();
   } else {
     me = null; msgs = []; partnerPres = null; myEmail = ''; profiles = {};
-    themeCfg = { ...DEF_THEME }; previewCfg = null; applyTheme(); known = new Set(); unread = 0; setText('');
+    themeCfg = { ...DEF_THEME }; previewCfg = null; applyTheme(); known = new Set(); unread = 0; setText(''); exitSelect();
     clearCtx(); closePanel();
     $('chat').classList.add('hidden');
     $('login').classList.remove('hidden');
@@ -537,12 +580,14 @@ function snippet(m) {
 
 function bubble(m) {
   const mine = m.uid === me.uid;
+  let cap = null;
   const b = el('div', 'm ' + (mine ? 'me' : 'them'));
   b.id = 'm-' + m.id; b.dataset.id = m.id;
   if (m.deleted) {
     b.classList.add('del'); b.appendChild(document.createTextNode('🚫 This message was deleted'));
   } else {
     if (m.image) b.classList.add('has-img');
+    if (m.image && !m.text) b.classList.add('img-only');
     if (m.replyTo) {
       const o = msgs.find(x => x.id === m.replyTo.id);
       const q = el('div', 'quote'); q.dataset.ref = m.replyTo.id;
@@ -555,7 +600,7 @@ function bubble(m) {
       b.appendChild(i);
     }
     if (m.text) {
-      if (m.image) b.appendChild(el('span', 'cap', m.text)); else b.appendChild(document.createTextNode(m.text));
+      if (m.image) { cap = el('span', 'cap', m.text); b.appendChild(cap); } else b.appendChild(document.createTextNode(m.text));
     }
   }
   const t = el('span', 't');
@@ -569,7 +614,7 @@ function bubble(m) {
     else tk.innerHTML = ICON.one;
     t.appendChild(tk);
   }
-  b.appendChild(t);
+  (cap || b).appendChild(t);
   const rx = m.reactions && !m.deleted ? Object.values(m.reactions) : [];
   if (rx.length) {
     b.classList.add('has-rx');
@@ -626,6 +671,11 @@ function render() {
   firstLoad = false;
   if (atBottom) unread = 0;
   updateToBottom();
+  if (selecting) {
+    const ids = new Set(list.map(m => m.id));
+    selected = new Set([...selected].filter(id => ids.has(id)));
+    if (!selected.size) exitSelect(); else updateSelectUI();
+  }
 }
 function jumpTo(id) {
   const t = $('m-' + id);
@@ -634,7 +684,11 @@ function jumpTo(id) {
 
 /* ---------- composer: multi-line box (Enter = new line), drafts ---------- */
 let stashedDraft = '';
-function autosize() { const t = $('text'); t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 130) + 'px'; }
+function autosize() {
+  const t = $('text'); t.style.height = 'auto';
+  const h = Math.max(46, Math.min(t.scrollHeight, 130));
+  t.style.height = h + 'px'; t.style.overflowY = t.scrollHeight > 130 ? 'auto' : 'hidden';
+}
 function saveDraft() {
   if (!me || editing) return;
   const v = $('text').value;
@@ -642,6 +696,7 @@ function saveDraft() {
 }
 function setText(v) { $('text').value = v; autosize(); saveDraft(); }
 $('text').addEventListener('input', () => { autosize(); saveDraft(); });
+autosize();
 
 /* ---------- reply / edit context bar ---------- */
 function showCtx(title, snip) {
@@ -725,16 +780,32 @@ function toDataUrl(file) {
 
 /* ---------- sheet / lightbox ---------- */
 function sheet(items, header, cancelLabel) {
-  const s = $('sheet'); s.innerHTML = '';
-  const box = el('div', 'sbox');
+  const sh = $('sheet'); sh.innerHTML = '';
+  const box = el('div', 'sbox'); box.appendChild(el('div', 'grab'));
   if (header) box.appendChild(header);
-  items.concat([{ label: cancelLabel || 'Cancel' }]).forEach(it => {
-    const b = el('button', 'opt' + (it.danger ? ' danger' : ''), it.label);
+  const mk = it => {
+    const b = el('button', 'opt' + (it.danger ? ' danger' : ''));
+    if (it.icon) b.appendChild(el('i', 'ic', it.icon));
+    b.appendChild(el('span', '', it.label));
     b.onclick = () => { closeSheet(); if (it.fn) it.fn(); };
-    box.appendChild(b);
+    return b;
+  };
+  [items.filter(i => !i.danger), items.filter(i => i.danger)].forEach(list => {
+    if (!list.length) return;
+    const g = el('div', 'sgroup'); list.forEach(i => g.appendChild(mk(i))); box.appendChild(g);
   });
-  s.appendChild(box); s.classList.remove('hidden');
-  s.onclick = e => { if (e.target === s) closeSheet(); };
+  const c = el('button', 'opt cancel', cancelLabel || 'Cancel'); c.onclick = closeSheet; box.appendChild(c);
+  sh.appendChild(box); sh.classList.remove('hidden');
+  sh.onclick = e => { if (e.target === sh) closeSheet(); };
+}
+function confirmDialog({ icon = '🗑️', title, text, ok = 'Delete' }) {
+  return new Promise(res => {
+    $('dIco').textContent = icon; $('dTitle').textContent = title; $('dText').textContent = text; $('dYes').textContent = ok;
+    const d = $('dlg'); d.classList.remove('hidden');
+    const done = v => { d.classList.add('hidden'); res(v); };
+    $('dYes').onclick = () => done(true); $('dNo').onclick = () => done(false);
+    d.onclick = e => { if (e.target === d) done(false); };
+  });
 }
 function closeSheet() { $('sheet').classList.add('hidden'); }
 
@@ -753,7 +824,7 @@ $('lDl').onclick = () => downloadImg(lightSrc);
 /* ---------- edit history ---------- */
 function showHistory(m) {
   const hist = (m.history || []).slice().sort((a, b) => a.at - b.at);
-  const h = el('div');
+  const h = el('div', 'sgroup');
   h.appendChild(el('div', 'sh-title', 'Edit history'));
   const cur = el('div', 'ver cur', m.text || '(no text)');
   cur.appendChild(el('small', '', 'Current · edited ' + (hist.length ? fullTime({ toMillis: () => hist[hist.length - 1].at }) : '')));
@@ -776,8 +847,8 @@ function toggleReaction(m, emoji) {
 function showRbar(m, node) {
   const bar = $('rbar'); bar.innerHTML = '';
   const cur = m.reactions && m.reactions[me.uid];
-  REACTIONS.forEach(e => {
-    const b = el('button', cur === e ? 'sel' : '', e);
+  REACTIONS.forEach((e, i) => {
+    const b = el('button', cur === e ? 'sel' : '', e); b.style.animationDelay = (i * 30) + 'ms';
     b.onclick = ev => { ev.stopPropagation(); hideRbar(); toggleReaction(m, e); };
     bar.appendChild(b);
   });
@@ -803,6 +874,7 @@ const findMsg = node => { const b = node.closest && node.closest('.m'); return b
 
 box.addEventListener('pointerdown', e => {
   longFired = false; swipeM = null;
+  if (selecting) return;
   const m = findMsg(e.target); if (!m || m.pending) return;
   sx = e.clientX; sy = e.clientY; swipeM = m;
   clearTimeout(pressTimer);
@@ -822,6 +894,7 @@ box.addEventListener('contextmenu', e => { if (e.target.closest('.m')) e.prevent
 box.addEventListener('click', e => {
   const m = findMsg(e.target); if (!m) return;
   if (longFired) { longFired = false; return; }
+  if (selecting) { toggleSel(m); return; }
   if (m.pending) return;
   const q = e.target.closest('.quote'); if (q) { jumpTo(q.dataset.ref); return; }
   if (e.target.closest('.ed')) { showHistory(m); return; }
@@ -841,42 +914,104 @@ box.addEventListener('click', e => {
 });
 
 /* ---------- message actions (long press) ---------- */
-function delForAll(m) {
-  const txt = m.uid === me.uid ? 'This message will be deleted for everyone.' : 'This message from ' + themName() + ' will be deleted for both of you. It can’t be undone.';
-  if (!confirm(txt + ' Continue?')) return;
-  updateDoc(doc(db, 'messages', m.id), {
-    deleted: true, text: '', image: deleteField(), reactions: deleteField(), history: deleteField(), edited: deleteField()
-  }).catch(console.error);
+const WIPE = () => ({ deleted: true, text: '', image: deleteField(), reactions: deleteField(), history: deleteField(), edited: deleteField() });
+async function delForAll(m) {
+  const ok = await confirmDialog({
+    icon: '⚠️', title: 'Delete for everyone?',
+    text: m.uid === me.uid ? 'This message will be removed for both of you.' : 'This message from ' + themName() + ' will be removed for both of you. This can’t be undone.',
+    ok: 'Delete'
+  });
+  if (!ok) return;
+  updateDoc(doc(db, 'messages', m.id), WIPE()).catch(console.error);
 }
 function openActions(m) {
-  const header = el('div');
+  const mine = m.uid === me.uid, header = el('div');
+  const pv = el('div', 'spv');
+  pv.appendChild(el('b', '', (mine ? 'You' : themName()) + ' · ' + timeStr(m.createdAt)));
+  pv.appendChild(el('span', '', snippet(m)));
+  header.appendChild(pv);
   if (!m.deleted) {
-    const rr = el('div', 'rrow'); const cur = m.reactions && m.reactions[me.uid];
-    REACTIONS.forEach(e => {
-      const b = el('button', cur === e ? 'sel' : '', e);
+    const rr = el('div', 'rrow'), cur = m.reactions && m.reactions[me.uid];
+    REACTIONS.forEach((e, i) => {
+      const b = el('button', cur === e ? 'sel' : '', e); b.style.animationDelay = (i * 35) + 'ms';
       b.onclick = () => { closeSheet(); toggleReaction(m, e); };
       rr.appendChild(b);
     });
     header.appendChild(rr);
-    if (m.uid === me.uid) {
-      const info = el('div', 'info');
+    if (mine) {
+      const si = el('div', 'sinfo');
       [['Sent', m.createdAt], ['Delivered', m.deliveredAt], ['Seen', m.seenAt]].forEach(([k, v]) => {
-        info.appendChild(document.createTextNode(k + ': ' + fullTime(v))); info.appendChild(document.createElement('br'));
+        const d = el('div', '', k); d.appendChild(el('b', '', v ? clock(ms(v)) : '—')); si.appendChild(d);
       });
-      header.appendChild(info);
+      header.appendChild(si);
     }
   }
   const items = [];
-  if (!m.deleted) items.push({ label: 'Reply', fn: () => startReply(m) });
-  if (!m.deleted && m.uid === me.uid) items.push({ label: 'Edit', fn: () => startEdit(m) });
-  if (!m.deleted && m.edited) items.push({ label: 'Edit history', fn: () => showHistory(m) });
-  if (!m.deleted && m.image) items.push({ label: 'Download photo', fn: () => downloadImg(m.image) });
-  if (!m.deleted && m.text) items.push({ label: 'Copy', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
-  items.push({ label: 'Delete for me', danger: true, fn: () =>
+  if (!m.deleted) items.push({ label: 'Reply', icon: '↩️', fn: () => startReply(m) });
+  if (!m.deleted && mine) items.push({ label: 'Edit', icon: '✏️', fn: () => startEdit(m) });
+  if (!m.deleted && m.edited) items.push({ label: 'Edit history', icon: '🕘', fn: () => showHistory(m) });
+  items.push({ label: 'Select', icon: '☑️', fn: () => enterSelect(m) });
+  if (!m.deleted && m.image) items.push({ label: 'Download photo', icon: '⬇️', fn: () => downloadImg(m.image) });
+  if (!m.deleted && m.text) items.push({ label: 'Copy', icon: '📋', fn: () => navigator.clipboard && navigator.clipboard.writeText(m.text) });
+  items.push({ label: 'Delete for me', icon: '🗑️', danger: true, fn: () =>
     updateDoc(doc(db, 'messages', m.id), { hiddenFor: arrayUnion(me.uid) }).catch(console.error) });
-  if (!m.deleted) items.push({ label: 'Delete for everyone', danger: true, fn: () => delForAll(m) });
+  if (!m.deleted) items.push({ label: 'Delete for everyone', icon: '⚠️', danger: true, fn: () => delForAll(m) });
   sheet(items, header);
 }
+
+/* ---------- multi-select ---------- */
+let selecting = false, selected = new Set();
+function updateSelectUI() {
+  $('chat').classList.toggle('selecting', selecting);
+  $('msgs').classList.toggle('sel-on', selecting);
+  $('selCount').textContent = selected.size + ' selected';
+  $('selDel').disabled = !selected.size;
+  document.querySelectorAll('#msgs .m').forEach(n => n.classList.toggle('sel', selected.has(n.dataset.id)));
+}
+function enterSelect(m) { selecting = true; selected = new Set(m ? [m.id] : []); hideRbar(); updateSelectUI(); }
+function exitSelect() { selecting = false; selected = new Set(); updateSelectUI(); }
+function toggleSel(m) {
+  if (m.pending) return;
+  if (selected.has(m.id)) selected.delete(m.id); else selected.add(m.id);
+  if (!selected.size) { exitSelect(); return; }
+  updateSelectUI();
+}
+$('selX').onclick = exitSelect;
+$('selAll').onclick = () => {
+  const all = visibleMsgs().filter(m => !m.pending);
+  if (all.every(m => selected.has(m.id))) { exitSelect(); return; }
+  all.forEach(m => selected.add(m.id)); updateSelectUI();
+};
+async function bulk(list, makeUpdate) {
+  for (let i = 0; i < list.length; i += 400) {
+    const batch = writeBatch(db);
+    list.slice(i, i + 400).forEach(m => batch.update(doc(db, 'messages', m.id), makeUpdate()));
+    await batch.commit();
+  }
+}
+function deleteSelected() {
+  const list = msgs.filter(m => selected.has(m.id)), n = list.length;
+  if (!n) return;
+  const alive = list.filter(m => !m.deleted), others = alive.filter(m => m.uid !== me.uid).length;
+  const h = el('div'), pv = el('div', 'spv');
+  pv.appendChild(el('b', '', 'Delete messages')); pv.appendChild(el('span', '', n + ' selected')); h.appendChild(pv);
+  const items = [{ label: 'Delete for me', icon: '🗑️', danger: true, fn: async () => {
+    try { await bulk(list, () => ({ hiddenFor: arrayUnion(me.uid) })); exitSelect(); }
+    catch (e) { alert('Could not delete the messages.'); console.error(e); }
+  } }];
+  if (alive.length) items.push({ label: 'Delete for everyone' + (alive.length < n ? ' (' + alive.length + ')' : ''), icon: '⚠️', danger: true, fn: async () => {
+    const ok = await confirmDialog({
+      icon: '⚠️', title: 'Delete ' + alive.length + ' message' + (alive.length > 1 ? 's' : '') + ' for everyone?',
+      text: others ? 'This includes ' + others + ' message' + (others > 1 ? 's' : '') + ' from ' + themName() + '. It can’t be undone.' : 'They will be removed for both of you. This can’t be undone.',
+      ok: 'Delete'
+    });
+    if (!ok) return;
+    try { await bulk(alive, WIPE); exitSelect(); }
+    catch (e) { alert('Could not delete the messages.'); console.error(e); }
+  } });
+  sheet(items, h);
+}
+$('selDel').onclick = deleteSelected;
 
 /* ---------- panel ---------- */
 let view = 'home';
@@ -926,8 +1061,8 @@ function showHome() {
   b.appendChild(row('🔒', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On' : 'Off'));
   b.appendChild(row('🌓', 'Dark / light mode', toggleTheme));
   b.appendChild(row('🧹', 'Clear chat', () => sheet([
-    { label: 'Clear for me', danger: true, fn: clearForMe },
-    { label: 'Clear for everyone', danger: true, fn: clearForAll }
+    { label: 'Clear for me', icon: '🧹', danger: true, fn: clearForMe },
+    { label: 'Clear for everyone', icon: '⚠️', danger: true, fn: clearForAll }
   ]), '', true));
   b.appendChild(row('↪', 'Sign out', async () => {
     closePanel(); stopTyping();
@@ -1171,7 +1306,8 @@ async function clearForMe() {
   catch (e) { alert('Could not clear the chat.'); console.error(e); }
 }
 async function clearForAll() {
-  if (!confirm('This will permanently delete the whole chat for both of you. Continue?')) return;
+  const ok = await confirmDialog({ icon: '⚠️', title: 'Clear the whole chat?', text: 'All messages will be permanently deleted for both of you. This can’t be undone.', ok: 'Clear chat' });
+  if (!ok) return;
   try {
     const snap = await getDocs(collection(db, 'messages'));
     let batch = writeBatch(db), n = 0;
