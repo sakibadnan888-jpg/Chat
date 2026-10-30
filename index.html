@@ -201,6 +201,65 @@ form textarea:focus{border-color:var(--accent)}
 .fprev{display:flex;flex-direction:column;gap:6px;padding:14px;background:var(--bg);border:1px solid var(--line);border-radius:16px;margin-bottom:12px}
 .fprev .m{cursor:default}
 
+/* Tabs, feed, profile */
+#shell{position:fixed;inset:0;display:flex;flex-direction:column;max-width:720px;margin:0 auto;background:var(--bg)}
+#shell>#chat,#shell>.view{flex:1;min-height:0;height:auto;max-width:none;margin:0}
+.view{display:flex;flex-direction:column;background:var(--bg)}
+#tabs{display:flex;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(env(safe-area-inset-bottom,0px) + 6px)}
+#tabs .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font-size:11.5px;font-weight:500;padding:4px 0;cursor:pointer;position:relative}
+#tabs .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#tabs .tab.on{color:var(--accent)}
+#tabs .tab.on svg{stroke-width:2.3}
+.tbadge{position:absolute;top:0;left:calc(50% + 6px);min-width:18px;height:18px;border-radius:9px;background:var(--danger);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px}
+body.kbd #tabs{display:none}
+body:not(.kbd) #chat form{padding-bottom:10px}
+.vhead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 12px) 8px 10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.vhead h2{font-size:20px;font-weight:600;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.vhead .acts{display:flex;align-items:center;gap:4px}
+.vscroll{flex:1;min-height:0;overflow-y:auto;padding:12px}
+.pill-new{border:0;border-radius:18px;padding:9px 14px;background:var(--grad);color:#fff;font-weight:600;cursor:pointer;font-size:14px}
+.pill-alt{border:1px solid var(--line);border-radius:18px;padding:9px 14px;background:var(--surface);color:var(--text);font-weight:600;cursor:pointer;font-size:14px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:20px;margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.phead{display:flex;align-items:center;gap:10px;padding:12px 8px 12px 14px}
+.phead .meta{flex:1;min-width:0}
+.phead b{display:block;font-size:15px}
+.phead small{color:var(--muted);font-size:12px}
+.pimg{display:block;width:100%;max-height:520px;object-fit:cover;cursor:pointer}
+.ptext{padding:12px 14px 4px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.pact{display:flex;gap:20px;padding:8px 14px 12px}
+.pact button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer}
+.pact svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pact .liked{color:#e5484d}
+.pact .liked svg{fill:#e5484d}
+.pempty{text-align:center;color:var(--muted);padding:44px 20px;line-height:1.5}
+.pempty b{display:block;color:var(--text);font-size:17px;margin-bottom:4px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:14px;font-weight:600;color:var(--muted);cursor:pointer;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seg button.on{background:var(--grad);color:#fff}
+.cover{height:150px;border-radius:20px;background:var(--grad) center/cover no-repeat;margin-bottom:-48px}
+.ptop{position:relative;display:flex;padding:0 16px;margin-bottom:6px}
+.avi.pav{width:96px;height:96px;font-size:36px;border:4px solid var(--bg);box-shadow:var(--shadow);cursor:pointer}
+.pname{font-size:22px;font-weight:600;padding:0 4px}
+.pstatus{display:inline-block;margin:6px 4px 0;padding:4px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;font-size:13.5px}
+.pbio{margin:10px 4px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.pstats{display:flex;gap:18px;margin:10px 4px;color:var(--muted);font-size:14px}
+.pstats b{color:var(--text)}
+.pbtns{display:flex;gap:8px;margin:12px 4px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px}
+.pt{aspect-ratio:1;border-radius:10px;background:var(--surface) center/cover no-repeat;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:8px;font-size:13px;color:var(--muted);overflow:hidden;cursor:pointer;text-align:center;word-break:break-word}
+.cprev{position:relative;margin:10px 0}
+.cprev img{width:100%;max-height:300px;object-fit:cover;border-radius:16px;display:block}
+.cprev button{position:absolute;top:8px;right:8px;border:0;border-radius:50%;width:32px;height:32px;background:rgba(0,0,0,.55);color:#fff;cursor:pointer}
+.clist{max-height:50vh;overflow-y:auto;margin-bottom:10px}
+.cm{display:flex;gap:10px;padding:6px 4px}
+.cm .avi{width:34px;height:34px;font-size:14px;flex:none}
+.cm .cb{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 12px;font-size:14.5px;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
+.cm .cb b{display:block;font-size:13px}
+.cm .cb small{color:var(--muted);font-size:11.5px}
+.cm .cx{border:0;background:none;color:var(--muted);cursor:pointer;align-self:flex-start;padding:4px}
+.cinput{display:flex;gap:8px;align-items:center}
+.cinput input{flex:1;min-width:0;padding:12px 16px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:22px;outline:none;font:inherit}
+
 /* Sheet & lightbox */
 #sheet{position:fixed;inset:0;background:rgba(12,8,36,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:70;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -281,6 +340,7 @@ form textarea:focus{border-color:var(--accent)}
   </div>
 </div>
 
+<div id="shell" class="hidden">
 <div id="chat" class="hidden">
   <div id="selbar">
     <button class="icon" id="selX" aria-label="Cancel selection">✕</button>
@@ -309,6 +369,23 @@ form textarea:focus{border-color:var(--accent)}
   </form>
 </div>
 
+<div id="feed" class="view hidden">
+  <div class="vhead"><h2>Our Feed</h2><div class="acts"><button class="pill-new" id="newPost">＋ New post</button><button class="icon" id="menuBtn2" aria-label="Menu">⋮</button></div></div>
+  <div class="vscroll" id="feedList"></div>
+</div>
+
+<div id="prof" class="view hidden">
+  <div class="vhead"><div class="seg" id="seg"><button data-u="me" class="on">You</button><button data-u="them">Them</button></div><div class="acts"><button class="icon" id="menuBtn3" aria-label="Menu">⋮</button></div></div>
+  <div class="vscroll" id="profBody"></div>
+</div>
+
+<nav id="tabs">
+  <button class="tab on" data-tab="feed"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>Feed</button>
+  <button class="tab" data-tab="chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Chat<span class="tbadge hidden" id="tabChatBadge">0</span></button>
+  <button class="tab" data-tab="prof"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+</nav>
+</div>
+
 <div id="rbar" class="hidden"></div>
 
 <div id="panel" class="overlay hidden">
@@ -326,7 +403,7 @@ form textarea:focus{border-color:var(--accent)}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
-         doc, setDoc, updateDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+         doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDRXqzXMjL-c4oUpRZMF1ueIVTkGVb0SMs",
@@ -490,6 +567,7 @@ function detectNew() {
     if (notifReady && m.uid !== me.uid && !m.pending && !m.deleted && !(m.hiddenFor || []).includes(me.uid) && ms(m.createdAt) > clearedAt) fresh.push(m);
   }
   notifReady = true;
+  if (fresh.length && curTab !== 'chat') { chatBadge += fresh.length; updateTabBadge(); }
   if (fresh.length) notifyNew(fresh);
 }
 function notifyNew(fresh) {
@@ -592,19 +670,22 @@ $('loginBtn').onclick = async () => {
 
 onAuthStateChanged(auth, user => {
   unsubs.forEach(u => u()); unsubs = [];
+  if (unsubPosts) { unsubPosts(); unsubPosts = null; } posts = [];
   timers.forEach(t => clearInterval(t)); timers = [];
   if (user) {
     me = { uid: user.uid }; myEmail = user.email || '';
     partner = UIDS.find(u => u !== user.uid) || UIDS[0];
     $('login').classList.add('hidden');
-    $('chat').classList.remove('hidden');
+    $('shell').classList.remove('hidden');
     firstLoad = true;
+    showTab('feed');
     startChat();
   } else {
     me = null; msgs = []; partnerPres = null; myEmail = ''; profiles = {};
     themeCfg = { ...DEF_THEME }; previewCfg = null; applyTheme(); known = new Set(); unread = 0; setText(''); exitSelect(); notifSeen = new Set(); notifReady = false; hiddenCount = 0; updateTitle();
     clearCtx(); closePanel();
-    $('chat').classList.add('hidden');
+    $('shell').classList.add('hidden'); $('chat').classList.add('hidden');
+    profData = {}; chatBadge = 0; curTab = 'feed'; updateTabBadge();
     $('login').classList.remove('hidden');
   }
 });
@@ -614,6 +695,7 @@ const ms = t => t ? t.toMillis() : Date.now();
 const ST = { serverTimestamps: 'estimate' };
 
 function startChat() {
+  feedLimit = 10; subscribePosts();
   unsubs.push(onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc'), limit(200)),
     { includeMetadataChanges: true }, snap => {
       msgs = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites })).reverse();
@@ -621,7 +703,7 @@ function startChat() {
     }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'meta', 'settings'), s => {
     nick = (s.exists() && s.data().nick) || {};
-    $('title').textContent = nick[partner] || 'Chat';
+    $('title').textContent = nick[partner] || 'Chat'; refreshTabs();
     applyAvatars(); render();
   }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'users', me.uid), s => {
@@ -633,7 +715,7 @@ function startChat() {
     partnerPres = s.exists() ? s.data(ST) : null; updateStatus(); applyAvatars();
   }, e => console.error(e)));
   [me.uid, partner].forEach(u => unsubs.push(onSnapshot(doc(db, 'profiles', u), s => {
-    profiles[u] = s.exists() ? (s.data().photo || '') : ''; applyAvatars();
+    profData[u] = s.exists() ? s.data() : {}; profiles[u] = profData[u].photo || ''; applyAvatars(); refreshTabs();
   }, e => console.error(e))));
   unsubs.push(onSnapshot(doc(db, 'meta', 'theme'), s => {
     themeCfg = s.exists() ? { ...DEF_THEME, ...s.data() } : { ...DEF_THEME };
@@ -652,7 +734,7 @@ function visibleMsgs() {
 
 function markReceived() {
   if (!me || !msgs.length) return;
-  const seen = document.visibilityState === 'visible';
+  const seen = document.visibilityState === 'visible' && curTab === 'chat';
   const batch = writeBatch(db); let n = 0;
   for (const m of msgs) {
     if (m.uid === me.uid || m.pending) continue;
@@ -1194,10 +1276,283 @@ function deleteSelected() {
 }
 $('selDel').onclick = deleteSelected;
 
+/* ================= Tabs, feed posts and profiles ================= */
+let curTab = 'feed', chatBadge = 0, posts = [], feedLimit = 10, profData = {}, profWho = 'me', unsubPosts = null, commentsFor = null;
+const HEART = '<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/></svg>';
+const CMT = '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
+const SENDI = '<svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg>';
+
+function updateTabBadge() { const e = $('tabChatBadge'); e.textContent = chatBadge > 99 ? '99+' : chatBadge; e.classList.toggle('hidden', !chatBadge); }
+function showTab(t) {
+  curTab = t; exitSelect(); hideRbar();
+  $('chat').classList.toggle('hidden', t !== 'chat');
+  $('feed').classList.toggle('hidden', t !== 'feed');
+  $('prof').classList.toggle('hidden', t !== 'prof');
+  document.querySelectorAll('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  if (t === 'chat') { chatBadge = 0; updateTabBadge(); firstLoad = true; render(); markReceived(); }
+  if (t === 'feed') renderFeed();
+  if (t === 'prof') renderProfile();
+}
+document.querySelectorAll('#tabs .tab').forEach(b => { b.onclick = () => showTab(b.dataset.tab); });
+function refreshTabs() { if (curTab === 'feed') renderFeed(); else if (curTab === 'prof') renderProfile(); }
+
+// hide the tab bar while the keyboard is open
+document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('input,textarea')) document.body.classList.add('kbd'); });
+document.addEventListener('focusout', () => setTimeout(() => {
+  const a = document.activeElement;
+  if (!a || !(a.matches && a.matches('input,textarea'))) document.body.classList.remove('kbd');
+}, 60));
+
+const whoName = uid => uid === me.uid ? 'You' : themName();
+function relTime(t) {
+  const d = Date.now() - t;
+  if (d < 60e3) return 'Just now';
+  if (d < 3600e3) return Math.floor(d / 60e3) + 'm ago';
+  if (d < 86400e3) return Math.floor(d / 3600e3) + 'h ago';
+  const f = fmtSeen(t); return f.charAt(0).toUpperCase() + f.slice(1);
+}
+function fitImage(file, maxDim, maxLen) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      let sc = Math.min(1, maxDim / Math.max(img.width, img.height));
+      for (let a = 0; a < 5; a++) {
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        for (let q = 0.78; q >= 0.45; q -= 0.08) {
+          const out = c.toDataURL('image/jpeg', q);
+          if (out.length <= maxLen) { URL.revokeObjectURL(url); res(out); return; }
+        }
+        sc *= 0.8;
+      }
+      URL.revokeObjectURL(url); rej(new Error('big'));
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+
+/* ----- posts ----- */
+function subscribePosts() {
+  if (unsubPosts) unsubPosts();
+  unsubPosts = onSnapshot(query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(feedLimit)), snap => {
+    posts = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites }));
+    refreshTabs(); drawComments();
+  }, e => console.error(e));
+}
+function toggleLike(p) {
+  if (p.pending) return;
+  const liked = !!(p.likes && p.likes[me.uid]);
+  updateDoc(doc(db, 'posts', p.id), { ['likes.' + me.uid]: liked ? deleteField() : true }).catch(console.error);
+}
+function postMenu(p) {
+  sheet([
+    { label: 'Edit post', icon: 'edit', fn: () => showCompose(p) },
+    { label: 'Delete post', icon: 'trash', danger: true, fn: async () => {
+      const ok = await confirmDialog({ icon: '🗑️', title: 'Delete this post?', text: 'It will be removed for both of you. This can’t be undone.', ok: 'Delete' });
+      if (ok) deleteDoc(doc(db, 'posts', p.id)).catch(console.error);
+    } }
+  ]);
+}
+function postCard(p) {
+  const mine = p.uid === me.uid;
+  const c = el('div', 'pcard'); c.id = 'p-' + p.id;
+  const h = el('div', 'phead');
+  const av = el('div', 'avi'); setAv(av, profiles[p.uid], initialOf(nick[p.uid])); h.appendChild(av);
+  const meta = el('div', 'meta'); meta.appendChild(el('b', '', whoName(p.uid)));
+  meta.appendChild(el('small', '', relTime(ms(p.createdAt)) + (p.edited ? ' · edited' : ''))); h.appendChild(meta);
+  if (mine && !p.pending) { const mb = el('button', 'icon', '⋮'); mb.onclick = () => postMenu(p); h.appendChild(mb); }
+  c.appendChild(h);
+  if (p.image) { const i = el('img', 'pimg'); i.src = p.image; i.alt = 'Photo'; i.onclick = () => openLight(p.image); c.appendChild(i); }
+  if (p.text) c.appendChild(el('div', 'ptext', p.text));
+  const likes = p.likes ? Object.keys(p.likes).length : 0, liked = !!(p.likes && p.likes[me.uid]), nc = (p.comments || []).length;
+  const act = el('div', 'pact');
+  const lb = el('button', liked ? 'liked' : ''); lb.innerHTML = HEART + '<span>' + likes + '</span>'; lb.onclick = () => toggleLike(p);
+  const cb = el('button'); cb.innerHTML = CMT + '<span>' + nc + '</span>'; cb.onclick = () => openComments(p.id);
+  act.appendChild(lb); act.appendChild(cb); c.appendChild(act);
+  return c;
+}
+function renderFeed() {
+  if (!me) return;
+  const box = $('feedList'), top = box.scrollTop;
+  box.innerHTML = '';
+  if (!posts.length) {
+    const e = el('div', 'pempty'); e.appendChild(el('b', '', 'No posts yet'));
+    e.appendChild(document.createTextNode('Share a photo or a thought. Only the two of you can see it.'));
+    const bt = el('button', 'pill-new', 'Create the first post'); bt.style.marginTop = '14px'; bt.onclick = () => showCompose();
+    e.appendChild(document.createElement('br')); e.appendChild(bt); box.appendChild(e);
+  }
+  posts.forEach(p => box.appendChild(postCard(p)));
+  if (posts.length >= feedLimit) {
+    const more = el('button', 'pill-alt', 'Load more'); more.style.cssText = 'display:block;margin:0 auto 16px';
+    more.onclick = () => { feedLimit += 10; subscribePosts(); }; box.appendChild(more);
+  }
+  box.scrollTop = top;
+}
+$('newPost').onclick = () => showCompose();
+function jumpToPost(id) {
+  showTab('feed');
+  setTimeout(() => { const n = $('p-' + id); if (n) { n.scrollIntoView({ block: 'center' }); n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }, 60);
+}
+
+function showCompose(p) {
+  $('panel').classList.remove('hidden'); backTo = 'close';
+  const b = setView('compose', p ? 'Edit post' : 'New post');
+  let img = p && p.image ? p.image : '';
+  const ta = el('textarea', 'field'); ta.rows = 5; ta.maxLength = 2000; ta.placeholder = 'What’s on your mind?'; ta.value = p ? (p.text || '') : '';
+  b.appendChild(ta);
+  const prev = el('div'); b.appendChild(prev);
+  const draw = () => {
+    prev.innerHTML = '';
+    if (img) {
+      const w = el('div', 'cprev'), i = el('img'); i.src = img; i.alt = ''; w.appendChild(i);
+      const x = el('button', '', '✕'); x.onclick = () => { img = ''; draw(); }; w.appendChild(x); prev.appendChild(w);
+    }
+  };
+  draw();
+  const f = el('input'); f.type = 'file'; f.accept = 'image/*'; f.className = 'hidden';
+  f.onchange = async e => {
+    const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+    try { img = await fitImage(file, 1080, 450000); draw(); } catch (err) { alert('Could not use that photo.'); console.error(err); }
+  };
+  b.appendChild(f);
+  b.appendChild(row('image', 'Add or change photo', () => f.click(), '', false, true));
+  const go = el('button', 'primary', p ? 'Save' : 'Post'); go.style.marginTop = '12px';
+  go.onclick = async () => {
+    const text = ta.value.trim();
+    if (!text && !img) { alert('Add some text or a photo first.'); return; }
+    go.disabled = true;
+    try {
+      if (p) {
+        const u = { text, edited: true };
+        if (img !== (p.image || '')) u.image = img || deleteField();
+        await updateDoc(doc(db, 'posts', p.id), u);
+      } else {
+        const d = { uid: me.uid, text, createdAt: serverTimestamp() };
+        if (img) d.image = img;
+        await addDoc(collection(db, 'posts'), d);
+      }
+      closePanel(); showTab('feed');
+    } catch (e) { alert('Could not save the post.'); console.error(e); go.disabled = false; }
+  };
+  b.appendChild(go);
+}
+
+/* ----- comments ----- */
+function drawComments() {
+  const list = $('clist');
+  if (!commentsFor || !list || $('sheet').classList.contains('hidden')) return;
+  const p = posts.find(x => x.id === commentsFor);
+  list.innerHTML = '';
+  if (!p) { list.appendChild(el('div', 'note', 'This post is no longer available.')); return; }
+  const cs = (p.comments || []).slice().sort((a, b) => a.at - b.at);
+  if (!cs.length) list.appendChild(el('div', 'note', 'No comments yet. Be the first.'));
+  cs.forEach(cm => {
+    const r = el('div', 'cm'), av = el('div', 'avi'); setAv(av, profiles[cm.uid], initialOf(nick[cm.uid])); r.appendChild(av);
+    const cb = el('div', 'cb'); cb.appendChild(el('b', '', whoName(cm.uid))); cb.appendChild(document.createTextNode(cm.text));
+    cb.appendChild(el('small', '', ' ' + relTime(cm.at))); r.appendChild(cb);
+    if (cm.uid === me.uid) {
+      const x = el('button', 'cx', '✕');
+      x.onclick = () => updateDoc(doc(db, 'posts', p.id), { comments: (p.comments || []).filter(c => !(c.uid === cm.uid && c.at === cm.at)) }).catch(console.error);
+      r.appendChild(x);
+    }
+    list.appendChild(r);
+  });
+  list.scrollTop = list.scrollHeight;
+}
+function openComments(id) {
+  commentsFor = id;
+  const sh = $('sheet'); sh.innerHTML = '';
+  const box = el('div', 'sbox'); box.appendChild(el('div', 'grab')); box.appendChild(el('div', 'sh-title', 'Comments'));
+  const list = el('div', 'clist'); list.id = 'clist'; box.appendChild(list);
+  const r = el('div', 'cinput'), inp = el('input'); inp.type = 'text'; inp.placeholder = 'Write a comment…'; inp.maxLength = 500;
+  const sb = el('button', 'send'); sb.innerHTML = SENDI;
+  sb.onclick = async () => {
+    const text = inp.value.trim(); if (!text) return;
+    inp.value = '';
+    try { await updateDoc(doc(db, 'posts', id), { comments: arrayUnion({ uid: me.uid, text, at: Date.now() }) }); }
+    catch (e) { alert('Could not post the comment.'); console.error(e); }
+  };
+  r.appendChild(inp); r.appendChild(sb); box.appendChild(r);
+  sh.appendChild(box); sh.classList.remove('hidden');
+  sh.onclick = e => { if (e.target === sh) { closeSheet(); commentsFor = null; } };
+  drawComments();
+}
+
+/* ----- profile tab ----- */
+$('seg').onclick = e => { const b = e.target.closest('button'); if (!b) return; profWho = b.dataset.u; renderProfile(); };
+function renderProfile() {
+  if (!me) return;
+  document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.u === profWho));
+  $('seg').querySelector('[data-u="them"]').textContent = themName();
+  const uid = profWho === 'me' ? me.uid : partner, mine = uid === me.uid, d = profData[uid] || {};
+  const box = $('profBody'); box.innerHTML = '';
+  const cover = el('div', 'cover'); if (d.cover) { cover.style.backgroundImage = 'url("' + d.cover + '")'; cover.onclick = () => openLight(d.cover); }
+  box.appendChild(cover);
+  const top = el('div', 'ptop'), av = el('div', 'avi pav'); setAv(av, profiles[uid], initialOf(nick[uid]));
+  av.onclick = () => { if (profiles[uid]) openLight(profiles[uid]); }; top.appendChild(av); box.appendChild(top);
+  box.appendChild(el('div', 'pname', mine ? (nick[me.uid] || 'You') : themName()));
+  if (d.status) box.appendChild(el('div', 'pstatus', d.status));
+  if (d.bio) box.appendChild(el('div', 'pbio', d.bio));
+  const mp = posts.filter(p => p.uid === uid);
+  const st = el('div', 'pstats'); const sp = el('span'); sp.innerHTML = '<b>' + mp.length + '</b> posts'; st.appendChild(sp); box.appendChild(st);
+  if (mine) {
+    const bt = el('div', 'pbtns');
+    const e1 = el('button', 'pill-new', 'Edit profile'); e1.onclick = () => { $('panel').classList.remove('hidden'); backTo = 'close'; showEditProfile(); };
+    const e2 = el('button', 'pill-alt', 'New post'); e2.onclick = () => showCompose();
+    bt.appendChild(e1); bt.appendChild(e2); box.appendChild(bt);
+  }
+  if (!mp.length) { box.appendChild(el('div', 'pempty', mine ? 'You haven’t posted anything yet.' : 'No posts yet.')); return; }
+  const g = el('div', 'pgrid');
+  mp.forEach(p => {
+    const t = el('div', 'pt');
+    if (p.image) t.style.backgroundImage = 'url("' + p.image + '")'; else t.textContent = (p.text || '').slice(0, 60);
+    t.onclick = () => jumpToPost(p.id); g.appendChild(t);
+  });
+  box.appendChild(g);
+}
+function showEditProfile() {
+  const b = setView('editprof', 'Edit profile');
+  const d = profData[me.uid] || {};
+  let cover = d.cover || '';
+  b.appendChild(el('label', 'lbl', 'Status'));
+  const st = el('input', 'field'); st.maxLength = 60; st.placeholder = 'e.g. 🎧 listening to music'; st.value = d.status || ''; b.appendChild(st);
+  b.appendChild(el('label', 'lbl', 'Bio'));
+  const bio = el('textarea', 'field'); bio.rows = 4; bio.maxLength = 150; bio.placeholder = 'A few words about you'; bio.value = d.bio || ''; b.appendChild(bio);
+  b.appendChild(el('label', 'lbl', 'Cover photo'));
+  const cp = el('div'); b.appendChild(cp);
+  const drawCover = () => {
+    cp.innerHTML = '';
+    if (cover) { const w = el('div', 'cprev'), i = el('img'); i.src = cover; i.alt = ''; w.appendChild(i);
+      const x = el('button', '', '✕'); x.onclick = () => { cover = ''; drawCover(); }; w.appendChild(x); cp.appendChild(w); }
+  };
+  drawCover();
+  const f = el('input'); f.type = 'file'; f.accept = 'image/*'; f.className = 'hidden';
+  f.onchange = async e => {
+    const file = e.target.files[0]; e.target.value = ''; if (!file) return;
+    try { cover = await fitImage(file, 1100, 250000); drawCover(); } catch (err) { alert('Could not use that photo.'); console.error(err); }
+  };
+  b.appendChild(f);
+  b.appendChild(row('image', 'Change cover photo', () => f.click(), '', false, true));
+  b.appendChild(row('camera', 'Change profile photo', showPhoto));
+  const go = el('button', 'primary', 'Save'); go.style.marginTop = '12px';
+  go.onclick = async () => {
+    go.disabled = true;
+    try {
+      const u = { status: st.value.trim(), bio: bio.value.trim(), updatedAt: serverTimestamp() };
+      if (cover !== (d.cover || '')) u.cover = cover;
+      await setDoc(doc(db, 'profiles', me.uid), u, { merge: true });
+      if (backTo === 'close') closePanel(); else showHome();
+    } catch (e) { alert('Could not save your profile.'); console.error(e); go.disabled = false; }
+  };
+  b.appendChild(go);
+}
+
 /* ---------- panel ---------- */
 let view = 'home';
-$('menuBtn').onclick = () => { $('panel').classList.remove('hidden'); showHome(); };
-$('pBack').onclick = () => { if (view === 'home') closePanel(); else showHome(); };
+let backTo = 'home';
+function openMenu() { $('panel').classList.remove('hidden'); backTo = 'home'; showHome(); }
+$('menuBtn').onclick = openMenu; $('menuBtn2').onclick = openMenu; $('menuBtn3').onclick = openMenu;
+$('pBack').onclick = () => { if (view === 'home' || (backTo === 'close' && (view === 'compose' || view === 'editprof'))) closePanel(); else showHome(); };
 let emailsShown = false, askPw = false, emailTimer = null;
 function closePanel() {
   if (previewCfg) { previewCfg = null; applyTheme(); }
@@ -1245,7 +1600,7 @@ function showHome() {
   const emailRow = emailsShown
     ? row('eyeOff', 'Hide emails', hideEmails, 'Visible for 30 seconds', false, true)
     : row('eye', 'Show emails', () => { askPw = true; showHome(); }, 'Password required', false, true);
-  grp('Profile', [row('camera', 'Profile photo', showPhoto), row('user', 'Nicknames', showNick)].concat(askPw ? [] : [emailRow]));
+  grp('Profile', [row('camera', 'Profile photo', showPhoto), row('edit', 'Edit profile (bio, status, cover)', showEditProfile), row('user', 'Nicknames', showNick)].concat(askPw ? [] : [emailRow]));
   grp('Customization', [
     row('palette', 'Chat theme & wallpaper', showTheme),
     row('type', 'Text size', showFont, { small: 'Small', default: 'Default', large: 'Large', xl: 'Extra large' }[store.get('fs')] || 'Default'),
@@ -1257,8 +1612,8 @@ function showHome() {
   ]);
   grp('Notifications & privacy', [
     row(NS.on() && !isMuted() ? 'bell' : 'bellOff', 'Notifications', showNotifs, notifSummary()),
-    row('lock', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On' : 'Off')
-  ]);
+    row('lock', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On · covers the whole app' : 'Off')
+  ].concat(store.get('pinhash') ? [row('lock', 'Lock the app now', () => { closePanel(); lockIfNeeded(); }, 'Asks for your PIN', false, true)] : []));
   grp('Actions', [
     row('trash', 'Clear chat', () => sheet([
       { label: 'Clear for me', icon: 'trash', danger: true, fn: clearForMe },
