@@ -260,6 +260,9 @@ body:not(.kbd) #chat form{padding-bottom:10px}
 .cinput{display:flex;gap:8px;align-items:center}
 .cinput input{flex:1;min-width:0;padding:12px 16px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:22px;outline:none;font:inherit}
 
+.phead .pdots{font-size:24px;padding:6px 12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:99;background:rgba(20,18,40,.92);color:#fff;padding:10px 18px;border-radius:22px;font-size:14px;animation:fadeIn .2s ease;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:80%;text-align:center}
+
 /* Sheet & lightbox */
 #sheet{position:fixed;inset:0;background:rgba(12,8,36,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:70;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -1036,6 +1039,7 @@ const E2K = { '📷': 'camera', '🎨': 'palette', '🔠': 'type', '👤': 'user
   '🧹': 'trash', '↪': 'logout', '👁': 'eye', '👁️': 'eye', '🙈': 'eyeOff', '🗑': 'trash', '🗑️': 'trash', '●': 'radioOn', '○': 'radioOff',
   '↩️': 'reply', '↩': 'reply', '✏️': 'edit', '✏': 'edit', '🕘': 'history', '☑️': 'select', '☑': 'select', '⬇️': 'download', '⬇': 'download',
   '📋': 'copy', '⚠️': 'warning', '⚠': 'warning' };
+IC.heart = '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/>';
 function setIcon(node, x) {
   const k = IC[x] ? x : E2K[x];
   if (k && IC[k]) node.innerHTML = '<svg viewBox="0 0 24 24">' + IC[k] + '</svg>'; else node.textContent = x;
@@ -1334,7 +1338,7 @@ function fitImage(file, maxDim, maxLen) {
 /* ----- posts ----- */
 function subscribePosts() {
   if (unsubPosts) unsubPosts();
-  unsubPosts = onSnapshot(query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(feedLimit)), snap => {
+  unsubPosts = onSnapshot(query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(feedLimit)), { includeMetadataChanges: true }, snap => {
     posts = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites }));
     refreshTabs(); drawComments();
   }, e => console.error(e));
@@ -1344,14 +1348,39 @@ function toggleLike(p) {
   const liked = !!(p.likes && p.likes[me.uid]);
   updateDoc(doc(db, 'posts', p.id), { ['likes.' + me.uid]: liked ? deleteField() : true }).catch(console.error);
 }
+const hiddenPosts = new Set((() => { try { return JSON.parse(store.get('hp') || '[]'); } catch (e) { return []; } })());
+const visiblePosts = () => posts.filter(p => !hiddenPosts.has(p.id));
+function toast(msg) {
+  const t = el('div', 'toast', msg); document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
 function postMenu(p) {
-  sheet([
-    { label: 'Edit post', icon: 'edit', fn: () => showCompose(p) },
-    { label: 'Delete post', icon: 'trash', danger: true, fn: async () => {
-      const ok = await confirmDialog({ icon: '🗑️', title: 'Delete this post?', text: 'It will be removed for both of you. This can’t be undone.', ok: 'Delete' });
-      if (ok) deleteDoc(doc(db, 'posts', p.id)).catch(console.error);
-    } }
-  ]);
+  const mine = p.uid === me.uid, liked = !!(p.likes && p.likes[me.uid]);
+  const h = el('div'), pv = el('div', 'spv');
+  pv.appendChild(el('b', '', whoName(p.uid) + ' · ' + relTime(ms(p.createdAt)) + (p.edited ? ' · edited' : '')));
+  pv.appendChild(el('span', '', p.text ? p.text : (p.image ? '📷 Photo' : '')));
+  h.appendChild(pv);
+  const si = el('div', 'sinfo');
+  [['Likes', String(p.likes ? Object.keys(p.likes).length : 0)], ['Comments', String((p.comments || []).length)], ['Posted', clock(ms(p.createdAt))]].forEach(([k, v]) => {
+    const d = el('div', '', k); d.appendChild(el('b', '', v)); si.appendChild(d);
+  });
+  h.appendChild(si);
+  const items = [
+    { label: liked ? 'Remove like' : 'Like', icon: 'heart', fn: () => toggleLike(p) },
+    { label: 'Comments', icon: 'msg', fn: () => openComments(p.id) }
+  ];
+  if (mine) items.push({ label: 'Edit post', icon: 'edit', fn: () => showCompose(p) });
+  if (p.text) items.push({ label: 'Copy text', icon: 'copy', fn: () => { if (navigator.clipboard) navigator.clipboard.writeText(p.text); toast('Copied'); } });
+  if (p.image) items.push({ label: 'Save photo', icon: 'download', fn: () => downloadImg(p.image) });
+  items.push({ label: 'Send in chat', icon: 'send', fn: async () => { await send(p.text || '', p.image || null, null); toast('Sent to chat'); } });
+  if (!mine) items.push({ label: 'Hide from my feed', icon: 'eyeOff', fn: () => {
+    hiddenPosts.add(p.id); store.set('hp', JSON.stringify([...hiddenPosts])); toast('Hidden from your feed'); refreshTabs();
+  } });
+  if (mine) items.push({ label: 'Delete post', icon: 'trash', danger: true, fn: async () => {
+    const ok = await confirmDialog({ icon: '🗑️', title: 'Delete this post?', text: 'It will be removed for both of you, with its likes and comments. This can’t be undone.', ok: 'Delete' });
+    if (ok) deleteDoc(doc(db, 'posts', p.id)).catch(console.error);
+  } });
+  sheet(items, h);
 }
 function postCard(p) {
   const mine = p.uid === me.uid;
@@ -1360,7 +1389,7 @@ function postCard(p) {
   const av = el('div', 'avi'); setAv(av, profiles[p.uid], initialOf(nick[p.uid])); h.appendChild(av);
   const meta = el('div', 'meta'); meta.appendChild(el('b', '', whoName(p.uid)));
   meta.appendChild(el('small', '', relTime(ms(p.createdAt)) + (p.edited ? ' · edited' : ''))); h.appendChild(meta);
-  if (mine && !p.pending) { const mb = el('button', 'icon', '⋮'); mb.onclick = () => postMenu(p); h.appendChild(mb); }
+  if (!p.pending) { const mb = el('button', 'icon pdots', '⋮'); mb.setAttribute('aria-label', 'Post options'); mb.onclick = () => postMenu(p); h.appendChild(mb); }
   c.appendChild(h);
   if (p.image) { const i = el('img', 'pimg'); i.src = p.image; i.alt = 'Photo'; i.onclick = () => openLight(p.image); c.appendChild(i); }
   if (p.text) c.appendChild(el('div', 'ptext', p.text));
@@ -1375,13 +1404,13 @@ function renderFeed() {
   if (!me) return;
   const box = $('feedList'), top = box.scrollTop;
   box.innerHTML = '';
-  if (!posts.length) {
+  if (!visiblePosts().length) {
     const e = el('div', 'pempty'); e.appendChild(el('b', '', 'No posts yet'));
     e.appendChild(document.createTextNode('Share a photo or a thought. Only the two of you can see it.'));
     const bt = el('button', 'pill-new', 'Create the first post'); bt.style.marginTop = '14px'; bt.onclick = () => showCompose();
     e.appendChild(document.createElement('br')); e.appendChild(bt); box.appendChild(e);
   }
-  posts.forEach(p => box.appendChild(postCard(p)));
+  visiblePosts().forEach(p => box.appendChild(postCard(p)));
   if (posts.length >= feedLimit) {
     const more = el('button', 'pill-alt', 'Load more'); more.style.cssText = 'display:block;margin:0 auto 16px';
     more.onclick = () => { feedLimit += 10; subscribePosts(); }; box.appendChild(more);
@@ -1493,7 +1522,7 @@ function renderProfile() {
   box.appendChild(el('div', 'pname', mine ? (nick[me.uid] || 'You') : themName()));
   if (d.status) box.appendChild(el('div', 'pstatus', d.status));
   if (d.bio) box.appendChild(el('div', 'pbio', d.bio));
-  const mp = posts.filter(p => p.uid === uid);
+  const mp = visiblePosts().filter(p => p.uid === uid);
   const st = el('div', 'pstats'); const sp = el('span'); sp.innerHTML = '<b>' + mp.length + '</b> posts'; st.appendChild(sp); box.appendChild(st);
   if (mine) {
     const bt = el('div', 'pbtns');
