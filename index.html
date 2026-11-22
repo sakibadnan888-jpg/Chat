@@ -90,7 +90,9 @@ header h2{font-size:17.5px;font-weight:600;line-height:1.2;white-space:nowrap;ov
 .status.typing{color:var(--accent);font-weight:500}
 .icon{background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:20px;line-height:1}
 #msgs{flex:1;min-height:0;position:relative;z-index:1;overflow-y:auto;padding:16px 12px;display:flex;flex-direction:column;gap:6px;touch-action:pan-y}
-.empty{margin:auto;color:var(--muted);text-align:center}
+.empty{margin:auto;color:var(--muted);text-align:center;padding:20px;line-height:1.5}
+.empty b{display:block;color:var(--text);font-size:16.5px;margin-bottom:4px}
+.empty svg.art{width:150px;height:110px;display:block;margin:0 auto 12px}
 .m{display:flow-root;font-size:var(--msg-fs,15.5px);position:relative;max-width:78%;padding:8px 12px;border-radius:20px;line-height:1.45;word-wrap:break-word;white-space:pre-wrap;cursor:pointer;box-shadow:var(--shadow);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .m.me{align-self:flex-end;background:var(--grad);color:var(--mine-text);border-bottom-right-radius:6px}
 .m.them{align-self:flex-start;background:var(--theirs);color:var(--theirs-text);border-bottom-left-radius:6px}
@@ -227,10 +229,12 @@ body:not(.kbd) #chat form{padding-bottom:10px}
 .pimg{display:block;width:100%;max-height:520px;object-fit:cover;cursor:pointer}
 .ptext{padding:12px 14px 4px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
 .pact{display:flex;gap:20px;padding:8px 14px 12px}
-.pact button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer}
+.pact button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-size:14px;cursor:pointer;transition:transform .15s}
+.pact button:active{transform:scale(1.18)}
 .pact svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .pact .liked{color:#e5484d}
-.pact .liked svg{fill:#e5484d}
+.pact .liked svg{fill:#e5484d;animation:likePop .3s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes likePop{0%{transform:scale(.6)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 .pempty{text-align:center;color:var(--muted);padding:44px 20px;line-height:1.5}
 .pempty b{display:block;color:var(--text);font-size:17px;margin-bottom:4px}
 .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:3px}
@@ -313,6 +317,94 @@ body:not(.kbd) #chat form{padding-bottom:10px}
 #light img{max-width:100%;max-height:100%}
 .lbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 12px;z-index:1}
 .lbar button{border:0;border-radius:22px;padding:9px 16px;background:rgba(255,255,255,.18);color:#fff;font-size:15px;cursor:pointer}
+
+/* ===== Design, themes, animations, fonts ===== */
+:root{--font:'Inter';--g1:#8b5cf6;--g2:#5b8def;--rad:20px;--gap:6px;--pad:8px 12px}
+:root[data-amoled="1"]{--surface:#0b0b0f;--theirs:#17171d;--line:#1b1b23}
+body{font-family:var(--font),'Hind Siliguri','Noto Sans Bengali',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+#msgs{gap:var(--gap)}
+.m{border-radius:var(--rad);padding:var(--pad)}
+[data-bubble="sharp"]{--rad:6px}
+[data-bubble="sharp"] .m.me{border-bottom-right-radius:2px}
+[data-bubble="sharp"] .m.them{border-bottom-left-radius:2px}
+[data-bubble="minimal"]{--rad:14px}
+[data-bubble="minimal"] .m{box-shadow:none}
+[data-bubble="minimal"] .m.them{border:1px solid var(--line)}
+[data-bubble="tail"]{--rad:18px}
+[data-bubble="tail"] .m.me,[data-bubble="tail"] .m.them{border-radius:18px}
+[data-bubble="tail"] .m.me:not(.has-img):not(.jumbo):not(.stk)::after{content:'';position:absolute;right:-6px;bottom:0;width:12px;height:14px;background:var(--g2);clip-path:polygon(0 0,0 100%,100% 100%)}
+[data-bubble="tail"] .m.them:not(.has-img):not(.jumbo):not(.stk)::after{content:'';position:absolute;left:-6px;bottom:0;width:12px;height:14px;background:var(--theirs);clip-path:polygon(100% 0,100% 100%,0 100%)}
+[data-density="compact"]{--gap:2px;--pad:5px 10px}
+[data-density="roomy"]{--gap:12px;--pad:11px 15px}
+.m.jumbo{background:none!important;box-shadow:none!important;border:0!important;font-size:48px;line-height:1.1;padding:2px 6px;color:inherit}
+.m.jumbo .t{float:none;display:flex;justify-content:flex-end;margin:2px 0 0;color:var(--muted)}
+.m.pop{animation:popm .28s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes popm{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+#shell>#chat,#shell>.view{animation:tabIn .24s ease}
+@keyframes tabIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.flyh{position:fixed;z-index:90;pointer-events:none;font-size:22px;animation:flyh 1s ease-out forwards}
+@keyframes flyh{0%{opacity:0;transform:translate(-50%,0) scale(.5)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-140px) scale(1.2)}}
+#splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:linear-gradient(160deg,#6d4be8,#4f7cf0);color:#fff;transition:opacity .35s ease}
+#splash.out{opacity:0;pointer-events:none}
+#splash .sl{width:88px;height:88px;border-radius:28px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;animation:pulse 1.4s ease-in-out infinite}
+#splash .sl svg{width:50px;height:50px}
+#splash b{font-size:22px;font-weight:600;letter-spacing:.3px}
+#splash .dots{display:flex;gap:7px}
+#splash .dots i{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.4;animation:dotb 1s ease-in-out infinite}
+#splash .dots i:nth-child(2){animation-delay:.15s}#splash .dots i:nth-child(3){animation-delay:.3s}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes dotb{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
+#offbar{background:#f59e0b;color:#1d1b2e;text-align:center;font-size:13px;font-weight:600;padding:5px 10px}
+.skel{height:190px;margin-bottom:14px;border-radius:20px;background:linear-gradient(100deg,var(--surface) 30%,var(--line) 50%,var(--surface) 70%);background-size:300% 100%;animation:shim 1.3s linear infinite;border:1px solid var(--line)}
+.skel-m{height:44px;border-radius:18px;margin-bottom:8px;background:linear-gradient(100deg,var(--surface) 30%,var(--line) 50%,var(--surface) 70%);background-size:300% 100%;animation:shim 1.3s linear infinite;border:1px solid var(--line)}
+.skel-m.me{align-self:flex-end;width:58%}
+.skel-m.them{align-self:flex-start;width:66%}
+@keyframes shim{from{background-position:100% 0}to{background-position:-100% 0}}
+.pempty svg.art{width:150px;height:110px;display:block;margin:0 auto 12px}
+
+/* Wallpapers */
+#wall.flow{background-size:300% 300%!important;animation:flowbg 16s ease infinite}
+@keyframes flowbg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+#wall .fx{position:absolute;display:block;pointer-events:none;will-change:transform,opacity;font-style:normal;color:rgba(255,255,255,.7);line-height:1}
+#wall .fx-hearts{bottom:-30px;animation:riseh linear infinite}
+#wall .fx-hearts::before{content:'❤'}
+#wall .fx-petals{top:-30px;animation:fallp linear infinite}
+#wall .fx-petals::before{content:'🌸'}
+#wall .fx-stars{width:3px;height:3px;border-radius:50%;background:#fff;animation:twk ease-in-out infinite}
+#wall .fx-rain{top:-40px;width:1.5px;height:26px;background:linear-gradient(transparent,rgba(255,255,255,.75));animation:fallr linear infinite}
+#wall .fx-snow{top:-12px;width:7px;height:7px;border-radius:50%;background:#fff;opacity:.85;animation:fallp linear infinite}
+#wall .fx-bubbles{bottom:-40px;border:2px solid rgba(255,255,255,.6);border-radius:50%;animation:riseb linear infinite}
+#wall .fx-moon{position:absolute;top:34px;right:34px;width:58px;height:58px;border-radius:50%;box-shadow:inset -15px 0 0 0 #fff4c2;transform:rotate(-20deg)}
+@keyframes riseh{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+@keyframes riseb{0%{transform:translateY(0);opacity:0}10%{opacity:.8}100%{transform:translateY(-115vh);opacity:0}}
+@keyframes fallp{0%{transform:translateY(0) translateX(0) rotate(0);opacity:0}10%{opacity:.9}100%{transform:translateY(115vh) translateX(40px) rotate(180deg);opacity:0}}
+@keyframes fallr{0%{transform:translateY(0);opacity:0}10%{opacity:1}100%{transform:translateY(115vh);opacity:.2}}
+@keyframes twk{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){#wall .fx,#wall.flow,.m.pop,#splash .sl,.flyh{animation:none}}
+.wtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 14px}
+.wt{height:84px;border:3px solid transparent;border-radius:16px;color:#fff;font-weight:600;font-size:12.5px;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;text-shadow:0 1px 3px rgba(0,0,0,.45);position:relative}
+.wt.sel{border-color:var(--text)}
+.wt .fxb{position:absolute;top:6px;right:8px;font-size:13px}
+.cpick{display:flex;gap:12px;margin:6px 0 14px}
+.cpick label{flex:1;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.cpick input{width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:3px}
+.lkprev{display:flex;flex-direction:column;gap:var(--gap);padding:14px;background:var(--bg);border:1px solid var(--line);border-radius:16px;margin-bottom:12px}
+.lkprev .m{cursor:default}
+.fontprev{font-size:17px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;text-align:center;color:var(--text)}
+
+/* Extra controls */
+.icon.plus{font-size:26px;padding:6px 12px}
+.send.mic svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+header .acts{display:flex;align-items:center;gap:0;flex:none}
+#recbar{display:none;align-items:center;gap:10px;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--surface);border-top:1px solid var(--line)}
+#chat.recording form{display:none}
+#chat.recording #recbar{display:flex}
+.rdot{width:12px;height:12px;border-radius:50%;background:#ef4444;animation:blink 1s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+#recT{font-variant-numeric:tabular-nums;font-weight:600}
+.rhint{flex:1;color:var(--muted);font-size:13px}
+#pinbar{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--line);cursor:pointer}
+.pill-alt.sm,.pill-new.sm{padding:7px 12px;font-size:13px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -344,6 +436,7 @@ body:not(.kbd) #chat form{padding-bottom:10px}
 </div>
 
 <div id="shell" class="hidden">
+<div id="offbar" class="hidden">You’re offline. Changes will sync when you’re back.</div>
 <div id="chat" class="hidden">
   <div id="selbar">
     <button class="icon" id="selX" aria-label="Cancel selection">✕</button>
@@ -356,8 +449,9 @@ body:not(.kbd) #chat form{padding-bottom:10px}
       <div class="av" id="av"><div class="avi" id="avi"></div><span class="dot" id="dot"></span></div>
       <div><h2 id="title">Chat</h2><div id="status" class="status">Offline</div></div>
     </div>
-    <button class="icon" id="menuBtn" aria-label="Menu">⋮</button>
+    <div class="acts"><button class="icon" id="menuBtn" aria-label="Menu">⋮</button></div>
   </header>
+  <div id="pinbar" class="hidden"></div>
   <div id="mwrap">
     <div id="wall"></div>
     <div id="msgs"></div>
@@ -365,10 +459,10 @@ body:not(.kbd) #chat form{padding-bottom:10px}
   </div>
   <div id="ctx" class="hidden"><div class="ctxtxt"><b id="ctxTitle"></b><span id="ctxSnip"></span></div><button class="icon" id="ctxX" aria-label="Cancel">✕</button></div>
   <form id="sendForm" autocomplete="off">
-    <button type="button" class="icon" id="attachBtn" aria-label="Photo">📎</button>
+    <button type="button" class="icon plus" id="attachBtn" aria-label="Add photo">＋</button>
     <input id="file" type="file" accept="image/*" class="hidden">
     <textarea id="text" rows="1" placeholder="Type a message" enterkeyhint="enter" maxlength="4000"></textarea>
-    <button type="submit" class="send" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg></button>
+    <button type="submit" class="send" id="sendBtn" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg></button>
   </form>
 </div>
 
@@ -382,14 +476,25 @@ body:not(.kbd) #chat form{padding-bottom:10px}
   <div class="vscroll" id="profBody"></div>
 </div>
 
+<div id="mem" class="view hidden">
+  <div class="vhead"><h2>Memories</h2><div class="acts"><button class="icon" id="menuBtn4" aria-label="Menu">⋮</button></div></div>
+  <div class="vscroll" id="memList"></div>
+</div>
+
 <nav id="tabs">
   <button class="tab on" data-tab="feed"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>Feed</button>
   <button class="tab" data-tab="chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Chat<span class="tbadge hidden" id="tabChatBadge">0</span></button>
+  <button class="tab" data-tab="mem"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Memories</button>
   <button class="tab" data-tab="prof"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
 </nav>
 </div>
 
 <div id="rbar" class="hidden"></div>
+<div id="splash">
+  <div class="sl"><svg viewBox="0 0 24 24"><path fill="#fff" d="M5.5 3h13A3.5 3.5 0 0122 6.5v8a3.5 3.5 0 01-3.5 3.5H11l-4.6 3.6c-.6.5-1.4.1-1.4-.7V18A3.5 3.5 0 012 14.5v-8A3.5 3.5 0 015.5 3z"/><circle cx="8" cy="10.5" r="1.3" fill="#6d4be8"/><circle cx="12" cy="10.5" r="1.3" fill="#6d4be8"/><circle cx="16" cy="10.5" r="1.3" fill="#6d4be8"/></svg></div>
+  <b>Our Chat</b>
+  <div class="dots"><i></i><i></i><i></i></div>
+</div>
 
 <div id="panel" class="overlay hidden">
   <div class="pbar"><button class="icon" id="pBack" aria-label="Back">←</button><h3 id="pTitle"></h3></div>
@@ -405,7 +510,7 @@ body:not(.kbd) #chat form{padding-bottom:10px}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
          doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -425,12 +530,15 @@ if ('serviceWorker' in navigator) {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+let db;
+try { db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) }); }
+catch (e) { db = getFirestore(app); }
 const $ = id => document.getElementById(id);
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 
 let me = null, partner = null, myEmail = '', msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
 let unsubs = [], timers = [], firstLoad = true;
+let msgsLoaded = false, postsLoaded = false;
 let profiles = {};
 let replyTo = null, editing = null;
 
@@ -441,40 +549,156 @@ const store = {
 };
 const themName = () => nick[partner] || 'Them';
 
+/* ---------- empty page SVG illustrations ---------- */
+const EMPTY_ART = {
+  chat: `<svg class="art" viewBox="0 0 180 130" fill="none">
+    <circle cx="90" cy="65" r="52" fill="var(--accent)" opacity=".1"/>
+    <rect x="34" y="34" width="76" height="44" rx="16" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
+    <path d="M52 50h36M52 60h24" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+    <rect x="74" y="60" width="72" height="40" rx="16" fill="var(--accent)"/>
+    <path d="M90 76h36M90 86h20" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
+    <path d="M138 35c0-3.5 4.5-6 7.2-2.2 2.7-3.8 7.2-1.3 7.2 2.2 0 4.5-7.2 8.8-7.2 8.8S138 39.5 138 35z" fill="#f43f5e"/>
+  </svg>`,
+  feed: `<svg class="art" viewBox="0 0 180 130" fill="none">
+    <circle cx="90" cy="65" r="52" fill="var(--accent)" opacity=".1"/>
+    <rect x="44" y="26" width="92" height="78" rx="16" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
+    <rect x="54" y="36" width="72" height="44" rx="10" fill="var(--accent)" opacity=".14"/>
+    <circle cx="71" cy="51" r="6" fill="var(--accent)" opacity=".65"/>
+    <path d="M56 76l18-16 14 12 12-10 24 18H56z" fill="var(--accent)" opacity=".45"/>
+    <path d="M60 92h44" stroke="var(--muted)" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+    <circle cx="144" cy="34" r="4" fill="#f59e0b"/>
+    <circle cx="34" cy="84" r="3" fill="var(--accent)" opacity=".6"/>
+  </svg>`,
+  prof: `<svg class="art" viewBox="0 0 180 130" fill="none">
+    <circle cx="90" cy="65" r="50" fill="var(--accent)" opacity=".1"/>
+    <rect x="46" y="34" width="38" height="38" rx="10" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.2"/>
+    <rect x="96" y="34" width="38" height="38" rx="10" fill="var(--accent)" opacity=".2" stroke="var(--accent)" stroke-width="2.2"/>
+    <rect x="46" y="80" width="38" height="22" rx="8" fill="var(--accent)" opacity=".2"/>
+    <rect x="96" y="80" width="38" height="22" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+    <circle cx="65" cy="50" r="5" fill="var(--accent)" opacity=".6"/>
+    <path d="M115 47v12M109 53h12" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`,
+  mem: `<svg class="art" viewBox="0 0 180 130" fill="none">
+    <circle cx="90" cy="65" r="50" fill="var(--accent)" opacity=".1"/>
+    <rect x="38" y="34" width="70" height="68" rx="14" transform="rotate(-7 38 34)" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>
+    <rect x="64" y="28" width="74" height="72" rx="14" transform="rotate(5 64 28)" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
+    <path d="M97 57c0-4 5.5-7 8.5-2.5 3-4.5 8.5-1.5 8.5 2.5 0 5.5-8.5 10.5-8.5 10.5S97 62.5 97 57z" fill="#f43f5e"/>
+  </svg>`
+};
+
 /* ---------- theme ---------- */
 const root = document.documentElement;
-root.dataset.theme = store.get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 const PRESETS = {
   violet:   { n: 'Violet',   a: '#8b5cf6', b: '#5b8def', ac: '#7c5cf5', acd: '#8b7cff', bl: '#f2f0fb', bd: '#0c0d17' },
   midnight: { n: 'Midnight', a: '#4338ca', b: '#1e40af', ac: '#6366f1', acd: '#818cf8', bl: '#eceef9', bd: '#07091a' },
   rose:     { n: 'Rose',     a: '#f43f5e', b: '#ec4899', ac: '#e11d48', acd: '#fb7185', bl: '#fff0f3', bd: '#190b11' },
   ocean:    { n: 'Ocean',    a: '#0ea5e9', b: '#2563eb', ac: '#0284c7', acd: '#38bdf8', bl: '#e8f5fd', bd: '#06121b' },
   forest:   { n: 'Forest',   a: '#16a34a', b: '#0d9488', ac: '#15803d', acd: '#4ade80', bl: '#ecf8ef', bd: '#07140c' },
-  sunset:   { n: 'Sunset',   a: '#f97316', b: '#ec4899', ac: '#ea580c', acd: '#fb923c', bl: '#fff3ea', bd: '#190e09' }
+  sunset:   { n: 'Sunset',   a: '#f97316', b: '#ec4899', ac: '#ea580c', acd: '#fb923c', bl: '#fff3ea', bd: '#190e09' },
+  lavender: { n: 'Lavender', a: '#a78bfa', b: '#f472b6', ac: '#9333ea', acd: '#c4b5fd', bl: '#f6f1ff', bd: '#120d1c' },
+  mint:     { n: 'Mint',     a: '#10b981', b: '#06b6d4', ac: '#059669', acd: '#34d399', bl: '#ecfdf5', bd: '#061513' },
+  coffee:   { n: 'Coffee',   a: '#92400e', b: '#b45309', ac: '#92400e', acd: '#d6a77a', bl: '#faf4ee', bd: '#17110c' },
+  cherry:   { n: 'Cherry Blossom', a: '#f472b6', b: '#fb7185', ac: '#db2777', acd: '#f9a8d4', bl: '#fff1f7', bd: '#1b0b14' },
+  neon:     { n: 'Neon',     a: '#0891b2', b: '#c026d3', ac: '#0891b2', acd: '#67e8f9', bl: '#effcff', bd: '#07070f' },
+  gold:     { n: 'Midnight Gold', a: '#b45309', b: '#ca8a04', ac: '#a16207', acd: '#facc15', bl: '#fbf7ea', bd: '#0b0a07' },
+  aurora:   { n: 'Aurora',   a: '#10b981', b: '#8b5cf6', ac: '#7c3aed', acd: '#6ee7b7', bl: '#f0fbf6', bd: '#07100f' }
 };
-const DEF_THEME = { preset: 'violet', wall: '', blur: 0, dim: 25 };
+const WALLS = {
+  sunset:   { n: 'Sunset',    bg: 'linear-gradient(160deg,#ff9a76,#ff6a88 55%,#6a5acd)' },
+  ocean:    { n: 'Deep sea',  bg: 'linear-gradient(160deg,#00c6ff,#0072ff)' },
+  forest:   { n: 'Forest',    bg: 'linear-gradient(160deg,#134e4a,#22c55e)' },
+  blush:    { n: 'Blush',     bg: 'linear-gradient(160deg,#fbc2eb,#a6c1ee)' },
+  night:    { n: 'Night',     bg: 'linear-gradient(160deg,#0f2027,#203a43,#2c5364)' },
+  eid:      { n: 'Eid',       bg: 'linear-gradient(170deg,#0b1d3a,#1c3f77 60%,#2a5298)', fx: 'eid', anim: 1 },
+  monsoon:  { n: 'Monsoon',   bg: 'linear-gradient(170deg,#3a4a5c,#5f7388 60%,#8aa0b3)', fx: 'rain', anim: 1 },
+  winter:   { n: 'Winter',    bg: 'linear-gradient(170deg,#8fb4d9,#cfe3f7)', fx: 'snow', anim: 1 },
+  spring:   { n: 'Spring',    bg: 'linear-gradient(170deg,#ffd6e0,#ffe8c2)', fx: 'petals', anim: 1 },
+  valentine:{ n: 'Valentine', bg: 'linear-gradient(170deg,#ff758c,#ff7eb3)', fx: 'hearts', anim: 1 },
+  flow:     { n: 'Color flow',bg: 'linear-gradient(120deg,#8b5cf6,#ec4899,#f59e0b,#10b981,#3b82f6)', flow: 1, anim: 1 },
+  hearts:   { n: 'Floating hearts', bg: 'linear-gradient(170deg,#2b1055,#7597de)', fx: 'hearts', anim: 1 },
+  stars:    { n: 'Twinkling stars', bg: 'linear-gradient(170deg,#02030a,#0b1530 70%,#1a2a5a)', fx: 'stars', anim: 1 },
+  bubbles:  { n: 'Bubbles',   bg: 'linear-gradient(170deg,#00c6fb,#005bea)', fx: 'bubbles', anim: 1 }
+};
+const DEF_THEME = { preset: 'violet', wall: '', wk: '', blur: 0, dim: 25, c1: '#8b5cf6', c2: '#5b8def' };
 let themeCfg = { ...DEF_THEME }, previewCfg = null;
+const hex2rgb = h => { h = h.replace('#', ''); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const rgb2hex = a => '#' + a.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+const mix = (h1, h2, t) => { const a = hex2rgb(h1), b = hex2rgb(h2); return rgb2hex(a.map((v, i) => v + (b[i] - v) * t)); };
+const isHex = s => /^#[0-9a-fA-F]{6}$/.test(s || '');
+function presetOf(cfg) {
+  if (cfg.preset === 'custom' && isHex(cfg.c1) && isHex(cfg.c2)) {
+    return { n: 'Custom', a: cfg.c1, b: cfg.c2, ac: mix(cfg.c1, '#000000', 0.15), acd: mix(cfg.c1, '#ffffff', 0.4), bl: mix(cfg.c1, '#ffffff', 0.93), bd: mix(cfg.c1, '#000000', 0.9) };
+  }
+  return PRESETS[cfg.preset] || PRESETS.violet;
+}
+function buildFx(w, fx) {
+  const n = { hearts: 16, stars: 38, rain: 46, snow: 30, petals: 14, bubbles: 16, eid: 30 }[fx] || 0, kind = fx === 'eid' ? 'stars' : fx;
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('i'); s.className = 'fx fx-' + kind;
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.animationDelay = (-Math.random() * 12) + 's';
+    s.style.animationDuration = (kind === 'rain' ? 0.9 + Math.random() * 0.9 : kind === 'stars' ? 2 + Math.random() * 3 : 7 + Math.random() * 8) + 's';
+    if (kind === 'stars') s.style.top = (Math.random() * 100) + '%';
+    if (kind === 'hearts' || kind === 'petals') s.style.fontSize = (12 + Math.random() * 14) + 'px';
+    if (kind === 'bubbles') { const z = 10 + Math.random() * 26; s.style.width = s.style.height = z + 'px'; }
+    if (kind === 'snow') { const z = 4 + Math.random() * 6; s.style.width = s.style.height = z + 'px'; }
+    w.appendChild(s);
+  }
+  if (fx === 'eid') { const m = document.createElement('i'); m.className = 'fx-moon'; w.appendChild(m); }
+}
 function applyTheme(cfg) {
   cfg = cfg || previewCfg || themeCfg;
-  const p = PRESETS[cfg.preset] || PRESETS.violet, dark = root.dataset.theme === 'dark', st = root.style;
+  const p = presetOf(cfg), dark = root.dataset.theme === 'dark', amoled = root.dataset.amoled === '1', st = root.style;
   st.setProperty('--grad', 'linear-gradient(135deg,' + p.a + ' 0%,' + p.b + ' 100%)');
+  st.setProperty('--g1', p.a); st.setProperty('--g2', p.b);
   st.setProperty('--accent', dark ? p.acd : p.ac);
-  st.setProperty('--bg', dark ? p.bd : p.bl);
-  const w = $('wall');
-  if (cfg.wall) {
-    w.style.backgroundImage = 'url("' + cfg.wall + '")';
-    w.style.filter = 'blur(' + (cfg.blur || 0) + 'px)';
-    w.style.setProperty('--dim', (cfg.dim || 0) / 100);
-    w.classList.add('on');
-  } else { w.classList.remove('on'); w.style.backgroundImage = ''; }
+  st.setProperty('--bg', amoled ? '#000000' : dark ? p.bd : p.bl);
+  const w = $('wall'), key = !cfg.wall && cfg.wk && WALLS[cfg.wk] ? cfg.wk : '', sig = cfg.wall ? 'photo' : key;
+  if (w.dataset.sig !== sig) {
+    w.dataset.sig = sig; w.innerHTML = ''; w.className = ''; w.style.background = ''; w.style.backgroundImage = '';
+    if (key) { w.style.background = WALLS[key].bg; if (WALLS[key].flow) w.classList.add('flow'); if (WALLS[key].fx) buildFx(w, WALLS[key].fx); }
+  }
+  if (cfg.wall) w.style.backgroundImage = 'url("' + cfg.wall + '")';
+  w.style.filter = cfg.wall ? 'blur(' + (cfg.blur || 0) + 'px)' : 'none';
+  w.style.setProperty('--dim', (cfg.dim || 0) / 100);
+  w.classList.toggle('on', !!(cfg.wall || key));
 }
-function toggleTheme() {
-  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-  root.dataset.theme = next; store.set('theme', next); applyTheme();
+const themeMode = () => store.get('mode') || store.get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+function effMode() {
+  const m = themeMode();
+  if (m === 'auto') { const h = new Date().getHours(); return (h >= 18 || h < 6) ? 'dark' : 'light'; }
+  return m;
 }
+function applyMode() {
+  const e = effMode();
+  root.dataset.theme = e === 'amoled' ? 'dark' : e;
+  if (e === 'amoled') root.dataset.amoled = '1'; else delete root.dataset.amoled;
+  applyTheme();
+}
+setInterval(() => { if (themeMode() === 'auto') applyMode(); }, 60000);
 const FS = { small: '14px', default: '15.5px', large: '17.5px', xl: '19.5px' };
 function applyFont() { root.style.setProperty('--msg-fs', FS[store.get('fs')] || FS.default); }
-applyTheme(); applyFont();
+
+/* Chat style: bubbles, density, font (this phone only) */
+const FONTS = {
+  inter:   { n: 'Inter (Default)', css: "'Inter'", url: '' },
+  poppins: { n: 'Poppins', css: "'Poppins'", url: 'family=Poppins:wght@400;500;600' },
+  hind:    { n: 'Hind Siliguri (Bengali)', css: "'Hind Siliguri'", url: 'family=Hind+Siliguri:wght@400;500;600' },
+  atma:    { n: 'Atma (Playful Bengali)', css: "'Atma'", url: 'family=Atma:wght@400;500;600' },
+  caveat:  { n: 'Caveat (Handwriting)', css: "'Caveat'", url: 'family=Caveat:wght@500;600;700' }
+};
+function loadFont(k) {
+  const f = FONTS[k]; if (!f || !f.url || document.getElementById('fnt-' + k)) return;
+  const l = document.createElement('link'); l.id = 'fnt-' + k; l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?' + f.url + '&display=swap'; document.head.appendChild(l);
+}
+function applyLook() {
+  const fk = FONTS[store.get('font')] ? store.get('font') : 'inter'; loadFont(fk);
+  root.style.setProperty('--font', FONTS[fk].css);
+  root.dataset.bubble = store.get('bubble') || 'round';
+  root.dataset.density = store.get('density') || 'cozy';
+}
+applyMode(); applyFont(); applyLook();
 
 /* ---------- profile photos ---------- */
 const initialOf = t => (t || '').trim().charAt(0).toUpperCase() || '•';
@@ -503,19 +727,22 @@ $('lockBtn').onclick = async () => {
 $('lockPin').addEventListener('keydown', e => { if (e.key === 'Enter') $('lockBtn').click(); });
 lockIfNeeded();
 
+const LOCK_OPTS = [['0', 'Immediately'], ['15', 'After 15 seconds'], ['60', 'After 1 minute'], ['300', 'After 5 minutes'], ['never', 'Only when I reopen the app']];
+function lockDelayMs() { const v = store.get('lockdelay'); if (v === 'never') return Infinity; if (v == null) return 30000; return (+v) * 1000; }
+function lockDelayLabel() { const v = store.get('lockdelay'); if (v == null) return 'After 30 seconds'; return (LOCK_OPTS.find(o => o[0] === v) || LOCK_OPTS[0])[1]; }
 let hiddenAt = 0;
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     hiddenAt = Date.now(); setPresence(false); stopTyping();
   } else {
-    if (hiddenAt && Date.now() - hiddenAt > 30000) lockIfNeeded();
+    if (hiddenAt && Date.now() - hiddenAt >= lockDelayMs()) lockIfNeeded();
     setPresence(true); markReceived(); hiddenCount = 0; updateTitle();
   }
 });
 window.addEventListener('focus', () => { markReceived(); hiddenCount = 0; updateTitle(); });
 window.addEventListener('pagehide', () => setPresence(false));
 
-/* ---------- notifications (sound / vibration / system alerts while the app is alive) ---------- */
+/* ---------- notifications ---------- */
 const NS = {
   on: () => store.get('n_on') !== '0',
   sound: () => store.get('n_sound') !== '0',
@@ -637,8 +864,14 @@ function showNotifs() {
   b.appendChild(g2);
   b.appendChild(el('div', 'gh', 'Try it'));
   const g3 = el('div', 'sgrp'); g3.appendChild(row('send', 'Send test notification', testNotify, 'Ignores mute', false, true)); b.appendChild(g3);
-  b.appendChild(el('div', 'note', 'Notifications work while the app is open or was used recently. If you fully close the app, your phone stops it and alerts pause until you open it again. These settings apply only to this phone.'));
+  b.appendChild(el('div', 'note', 'Notifications work while the app is open or was used recently. These settings apply only to this phone.'));
 }
+
+/* ---------- splash + offline banner ---------- */
+function hideSplash() { const s = $('splash'); if (!s || s.classList.contains('out')) return; s.classList.add('out'); setTimeout(() => s.remove(), 500); }
+setTimeout(hideSplash, 6000);
+function updOffline() { const b = $('offbar'); if (b) b.classList.toggle('hidden', navigator.onLine !== false); }
+window.addEventListener('online', updOffline); window.addEventListener('offline', updOffline); updOffline();
 
 /* ---------- login ---------- */
 const EYE = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
@@ -652,7 +885,6 @@ $('eye').onclick = () => {
 function shake() {
   document.querySelectorAll('#login .inp').forEach(n => { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); });
 }
-// Sign-in happens ONLY when the button is pressed (no auto-login, no Enter-key submit).
 $('loginBtn').onclick = async () => {
   const em = $('email').value.trim(), pw = $('pass').value;
   $('err').textContent = '';
@@ -672,9 +904,11 @@ $('loginBtn').onclick = async () => {
 };
 
 onAuthStateChanged(auth, user => {
+  hideSplash();
   unsubs.forEach(u => u()); unsubs = [];
   if (unsubPosts) { unsubPosts(); unsubPosts = null; } posts = [];
   timers.forEach(t => clearInterval(t)); timers = [];
+  msgsLoaded = false; postsLoaded = false;
   if (user) {
     me = { uid: user.uid }; myEmail = user.email || '';
     partner = UIDS.find(u => u !== user.uid) || UIDS[0];
@@ -701,6 +935,7 @@ function startChat() {
   feedLimit = 10; subscribePosts();
   unsubs.push(onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc'), limit(200)),
     { includeMetadataChanges: true }, snap => {
+      msgsLoaded = true;
       msgs = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites })).reverse();
       detectNew(); render(); markReceived();
     }, e => console.error(e)));
@@ -804,11 +1039,21 @@ function snippet(m) {
   return s.length > 90 ? s.slice(0, 90) + '…' : s;
 }
 
+const EMO = /^(?:\p{Extended_Pictographic}(?:\u200d\p{Extended_Pictographic})*[\u{1F3FB}-\u{1F3FF}\ufe0f]*|\s)+$/u;
+function isJumbo(t) {
+  if (!t || t.length > 30 || !EMO.test(t)) return false;
+  const c = t.replace(/\s/g, '');
+  const n = (typeof Intl !== 'undefined' && Intl.Segmenter) ? [...new Intl.Segmenter().segment(c)].length : [...c].length;
+  return n >= 1 && n <= 3;
+}
+let popIds = new Set(), renderedIds = new Set();
 function bubble(m) {
   const mine = m.uid === me.uid;
   let cap = null;
   const b = el('div', 'm ' + (mine ? 'me' : 'them'));
   b.id = 'm-' + m.id; b.dataset.id = m.id;
+  if (popIds.has(m.id)) b.classList.add('pop');
+  if (!m.deleted && !m.image && isJumbo(m.text)) b.classList.add('jumbo');
   if (m.deleted) {
     b.classList.add('del'); b.appendChild(document.createTextNode('🚫 This message was deleted'));
   } else {
@@ -878,15 +1123,28 @@ $('toBottom').onclick = () => { unread = 0; const b = $('msgs'); b.scrollTo({ to
 function render() {
   if (!me) return;
   const box = $('msgs');
+  if (!msgsLoaded) {
+    box.innerHTML = '';
+    ['them', 'me', 'them', 'me'].forEach(side => box.appendChild(el('div', 'skel-m ' + side)));
+    return;
+  }
   const prev = box.scrollTop;
   const atBottom = firstLoad || box.scrollHeight - box.scrollTop - box.clientHeight < 90;
   const list = visibleMsgs();
-  if (firstLoad) { known = new Set(); unread = 0; }
+  if (firstLoad) { known = new Set(); unread = 0; renderedIds = new Set(); }
+  popIds = firstLoad ? new Set() : new Set(list.filter(m => !renderedIds.has(m.id)).map(m => m.id));
+  list.forEach(m => renderedIds.add(m.id));
   const fresh = list.filter(m => m.uid !== me.uid && !m.pending && !known.has(m.id));
   if (!firstLoad && !atBottom) unread += fresh.length;
   list.forEach(m => known.add(m.id));
   box.innerHTML = '';
-  if (!list.length) box.appendChild(el('div', 'empty', 'No messages yet. Send the first one.'));
+  if (!list.length) {
+    const emp = el('div', 'empty');
+    emp.innerHTML = EMPTY_ART.chat;
+    emp.appendChild(el('b', '', 'No messages yet'));
+    emp.appendChild(document.createTextNode('Say hello and start your private conversation.'));
+    box.appendChild(emp);
+  }
   let lastDay = '';
   list.forEach(m => {
     const d = new Date(ms(m.createdAt)), k = d.toDateString();
@@ -908,7 +1166,7 @@ function jumpTo(id) {
   if (t) { t.scrollIntoView({ block: 'center' }); t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
 }
 
-/* ---------- composer: multi-line box (Enter = new line), drafts ---------- */
+/* ---------- composer ---------- */
 let stashedDraft = '';
 function autosize() {
   const t = $('text'); t.style.height = 'auto';
@@ -1004,7 +1262,7 @@ function toDataUrl(file) {
   });
 }
 
-/* ---------- icon set (clean line icons) ---------- */
+/* ---------- icon set ---------- */
 const IC = {
   eye: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
   eyeOff: '<path d="M17.9 17.9A10.9 10.9 0 0112 20C5 20 1 12 1 12a18.5 18.5 0 015.1-5.9M9.9 4.2A9.1 9.1 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 11-4.2-4.2"/>',
@@ -1016,6 +1274,7 @@ const IC = {
   search: '<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/>',
   lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',
   moon: '<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   bell: '<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/>',
   bellOff: '<path d="M13.7 21a2 2 0 01-3.4 0M18.6 13a17 17 0 01-.6-5 6 6 0 00-9.3-5M6.3 6.3A6 6 0 006 8c0 7-3 9-3 9h14M1 1l22 22"/>',
   trash: '<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6"/>',
@@ -1033,13 +1292,13 @@ const IC = {
   history: '<path d="M3 12a9 9 0 109-9 9.7 9.7 0 00-6.7 2.7L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/>',
   select: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',
   download: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
-  copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>'
+  copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/>'
 };
 const E2K = { '📷': 'camera', '🎨': 'palette', '🔠': 'type', '👤': 'user', '🖼': 'image', '🔍': 'search', '🔒': 'lock', '🌓': 'moon',
   '🧹': 'trash', '↪': 'logout', '👁': 'eye', '👁️': 'eye', '🙈': 'eyeOff', '🗑': 'trash', '🗑️': 'trash', '●': 'radioOn', '○': 'radioOff',
   '↩️': 'reply', '↩': 'reply', '✏️': 'edit', '✏': 'edit', '🕘': 'history', '☑️': 'select', '☑': 'select', '⬇️': 'download', '⬇': 'download',
   '📋': 'copy', '⚠️': 'warning', '⚠': 'warning' };
-IC.heart = '<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 000-7.8z"/>';
 function setIcon(node, x) {
   const k = IC[x] ? x : E2K[x];
   if (k && IC[k]) node.innerHTML = '<svg viewBox="0 0 24 24">' + IC[k] + '</svg>'; else node.textContent = x;
@@ -1105,7 +1364,7 @@ function showHistory(m) {
   sheet([], h, 'Close');
 }
 
-/* ---------- reactions ---------- */
+/* ---------- reactions & animations ---------- */
 function toggleReaction(m, emoji) {
   if (m.pending || m.deleted) return;
   const cur = m.reactions && m.reactions[me.uid];
@@ -1132,8 +1391,25 @@ function burst(x, y) {
   const b = el('div', 'burst', '❤️'); b.style.left = x + 'px'; b.style.top = y + 'px';
   document.body.appendChild(b); setTimeout(() => b.remove(), 850);
 }
+function flyHearts(node) {
+  if (!node) return;
+  const r = node.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  const icons = ['❤️', '💖', '❤️', '💕', '❤️'];
+  icons.forEach((ic, i) => {
+    setTimeout(() => {
+      const h = el('div', 'flyh', ic);
+      h.style.left = (cx + (Math.random() * 24 - 12)) + 'px';
+      h.style.top = cy + 'px';
+      h.style.setProperty('--dx', Math.round(Math.random() * 70 - 35) + 'px');
+      h.style.fontSize = (18 + Math.random() * 10) + 'px';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1050);
+    }, i * 65);
+  });
+}
 
-/* ---------- gestures: tap = reactions, double tap = ❤️, long press = actions, swipe right = reply ---------- */
+/* ---------- gestures ---------- */
 const box = $('msgs');
 let pressTimer = null, longFired = false, sx = 0, sy = 0, swipeM = null;
 let lastTap = { id: null, t: 0 }, tapTimer = null;
@@ -1180,7 +1456,7 @@ box.addEventListener('click', e => {
   }, 280);
 });
 
-/* ---------- message actions (long press) ---------- */
+/* ---------- message actions ---------- */
 const WIPE = () => ({ deleted: true, text: '', image: deleteField(), reactions: deleteField(), history: deleteField(), edited: deleteField() });
 async function delForAll(m) {
   const ok = await confirmDialog({
@@ -1291,16 +1567,21 @@ function showTab(t) {
   curTab = t; exitSelect(); hideRbar();
   $('chat').classList.toggle('hidden', t !== 'chat');
   $('feed').classList.toggle('hidden', t !== 'feed');
+  $('mem').classList.toggle('hidden', t !== 'mem');
   $('prof').classList.toggle('hidden', t !== 'prof');
   document.querySelectorAll('#tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   if (t === 'chat') { chatBadge = 0; updateTabBadge(); firstLoad = true; render(); markReceived(); }
   if (t === 'feed') renderFeed();
+  if (t === 'mem') renderMemories();
   if (t === 'prof') renderProfile();
 }
 document.querySelectorAll('#tabs .tab').forEach(b => { b.onclick = () => showTab(b.dataset.tab); });
-function refreshTabs() { if (curTab === 'feed') renderFeed(); else if (curTab === 'prof') renderProfile(); }
+function refreshTabs() {
+  if (curTab === 'feed') renderFeed();
+  else if (curTab === 'prof') renderProfile();
+  else if (curTab === 'mem') renderMemories();
+}
 
-// hide the tab bar while the keyboard is open
 document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('input,textarea')) document.body.classList.add('kbd'); });
 document.addEventListener('focusout', () => setTimeout(() => {
   const a = document.activeElement;
@@ -1339,13 +1620,15 @@ function fitImage(file, maxDim, maxLen) {
 function subscribePosts() {
   if (unsubPosts) unsubPosts();
   unsubPosts = onSnapshot(query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(feedLimit)), { includeMetadataChanges: true }, snap => {
+    postsLoaded = true;
     posts = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites }));
     refreshTabs(); drawComments();
   }, e => console.error(e));
 }
-function toggleLike(p) {
+function toggleLike(p, btn) {
   if (p.pending) return;
   const liked = !!(p.likes && p.likes[me.uid]);
+  if (!liked && btn) flyHearts(btn);
   updateDoc(doc(db, 'posts', p.id), { ['likes.' + me.uid]: liked ? deleteField() : true }).catch(console.error);
 }
 const hiddenPosts = new Set((() => { try { return JSON.parse(store.get('hp') || '[]'); } catch (e) { return []; } })());
@@ -1383,7 +1666,6 @@ function postMenu(p) {
   sheet(items, h);
 }
 function postCard(p) {
-  const mine = p.uid === me.uid;
   const c = el('div', 'pcard'); c.id = 'p-' + p.id;
   const h = el('div', 'phead');
   const av = el('div', 'avi'); setAv(av, profiles[p.uid], initialOf(nick[p.uid])); h.appendChild(av);
@@ -1395,7 +1677,7 @@ function postCard(p) {
   if (p.text) c.appendChild(el('div', 'ptext', p.text));
   const likes = p.likes ? Object.keys(p.likes).length : 0, liked = !!(p.likes && p.likes[me.uid]), nc = (p.comments || []).length;
   const act = el('div', 'pact');
-  const lb = el('button', liked ? 'liked' : ''); lb.innerHTML = HEART + '<span>' + likes + '</span>'; lb.onclick = () => toggleLike(p);
+  const lb = el('button', liked ? 'liked' : ''); lb.innerHTML = HEART + '<span>' + likes + '</span>'; lb.onclick = () => toggleLike(p, lb);
   const cb = el('button'); cb.innerHTML = CMT + '<span>' + nc + '</span>'; cb.onclick = () => openComments(p.id);
   act.appendChild(lb); act.appendChild(cb); c.appendChild(act);
   return c;
@@ -1404,8 +1686,14 @@ function renderFeed() {
   if (!me) return;
   const box = $('feedList'), top = box.scrollTop;
   box.innerHTML = '';
+  if (!postsLoaded) {
+    for (let i = 0; i < 3; i++) box.appendChild(el('div', 'skel'));
+    return;
+  }
   if (!visiblePosts().length) {
-    const e = el('div', 'pempty'); e.appendChild(el('b', '', 'No posts yet'));
+    const e = el('div', 'pempty');
+    e.innerHTML = EMPTY_ART.feed;
+    e.appendChild(el('b', '', 'No posts yet'));
     e.appendChild(document.createTextNode('Share a photo or a thought. Only the two of you can see it.'));
     const bt = el('button', 'pill-new', 'Create the first post'); bt.style.marginTop = '14px'; bt.onclick = () => showCompose();
     e.appendChild(document.createElement('br')); e.appendChild(bt); box.appendChild(e);
@@ -1421,6 +1709,29 @@ $('newPost').onclick = () => showCompose();
 function jumpToPost(id) {
   showTab('feed');
   setTimeout(() => { const n = $('p-' + id); if (n) { n.scrollIntoView({ block: 'center' }); n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); } }, 60);
+}
+
+function renderMemories() {
+  if (!me) return;
+  const box = $('memList'); box.innerHTML = '';
+  const photos = visiblePosts().filter(p => p.image);
+  if (!photos.length) {
+    const e = el('div', 'pempty');
+    e.innerHTML = EMPTY_ART.mem;
+    e.appendChild(el('b', '', 'No memories yet'));
+    e.appendChild(document.createTextNode('Photos you share on your feed will appear here like an album.'));
+    const bt = el('button', 'pill-new', 'Share a photo'); bt.style.marginTop = '14px'; bt.onclick = () => showCompose();
+    e.appendChild(document.createElement('br')); e.appendChild(bt); box.appendChild(e);
+    return;
+  }
+  const g = el('div', 'pgrid');
+  photos.forEach(p => {
+    const t = el('div', 'pt');
+    t.style.backgroundImage = 'url("' + p.image + '")';
+    t.onclick = () => openLight(p.image);
+    g.appendChild(t);
+  });
+  box.appendChild(g);
 }
 
 function showCompose(p) {
@@ -1530,7 +1841,14 @@ function renderProfile() {
     const e2 = el('button', 'pill-alt', 'New post'); e2.onclick = () => showCompose();
     bt.appendChild(e1); bt.appendChild(e2); box.appendChild(bt);
   }
-  if (!mp.length) { box.appendChild(el('div', 'pempty', mine ? 'You haven’t posted anything yet.' : 'No posts yet.')); return; }
+  if (!mp.length) {
+    const emp = el('div', 'pempty');
+    emp.innerHTML = EMPTY_ART.prof;
+    emp.appendChild(el('b', '', mine ? 'No posts yet' : 'Nothing here yet'));
+    emp.appendChild(document.createTextNode(mine ? 'Your shared photos and notes will show up here.' : themName() + ' hasn’t posted anything yet.'));
+    box.appendChild(emp);
+    return;
+  }
   const g = el('div', 'pgrid');
   mp.forEach(p => {
     const t = el('div', 'pt');
@@ -1580,7 +1898,7 @@ function showEditProfile() {
 let view = 'home';
 let backTo = 'home';
 function openMenu() { $('panel').classList.remove('hidden'); backTo = 'home'; showHome(); }
-$('menuBtn').onclick = openMenu; $('menuBtn2').onclick = openMenu; $('menuBtn3').onclick = openMenu;
+$('menuBtn').onclick = openMenu; $('menuBtn2').onclick = openMenu; $('menuBtn3').onclick = openMenu; $('menuBtn4').onclick = openMenu;
 $('pBack').onclick = () => { if (view === 'home' || (backTo === 'close' && (view === 'compose' || view === 'editprof'))) closePanel(); else showHome(); };
 let emailsShown = false, askPw = false, emailTimer = null;
 function closePanel() {
@@ -1632,8 +1950,9 @@ function showHome() {
   grp('Profile', [row('camera', 'Profile photo', showPhoto), row('edit', 'Edit profile (bio, status, cover)', showEditProfile), row('user', 'Nicknames', showNick)].concat(askPw ? [] : [emailRow]));
   grp('Customization', [
     row('palette', 'Chat theme & wallpaper', showTheme),
+    row('type', 'Chat style, bubbles & font', showLook, (store.get('bubble') || 'round') + ' · ' + FONTS[store.get('font') || 'inter'].n.split(' (')[0]),
     row('type', 'Text size', showFont, { small: 'Small', default: 'Default', large: 'Large', xl: 'Extra large' }[store.get('fs')] || 'Default'),
-    row('moon', 'Dark / light mode', () => { toggleTheme(); showHome(); }, root.dataset.theme === 'dark' ? 'Dark' : 'Light', false, true)
+    row('moon', 'Dark / light mode', showMode, modeLabel())
   ]);
   grp('Chat', [
     row('image', 'All attachments', showMedia, imgs + (imgs === 1 ? ' photo' : ' photos')),
@@ -1641,7 +1960,7 @@ function showHome() {
   ]);
   grp('Notifications & privacy', [
     row(NS.on() && !isMuted() ? 'bell' : 'bellOff', 'Notifications', showNotifs, notifSummary()),
-    row('lock', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On · covers the whole app' : 'Off')
+    row('lock', 'App lock (PIN)', showLock, store.get('pinhash') ? 'On · locks ' + lockDelayLabel().toLowerCase() : 'Off')
   ].concat(store.get('pinhash') ? [row('lock', 'Lock the app now', () => { closePanel(); lockIfNeeded(); }, 'Asks for your PIN', false, true)] : []));
   grp('Actions', [
     row('trash', 'Clear chat', () => sheet([
@@ -1682,7 +2001,7 @@ function showPhoto() {
     const f = e.target.files[0]; if (!f) return;
     try {
       const url = await squarePhoto(f);
-      await setDoc(doc(db, 'profiles', me.uid), { photo: url, updatedAt: serverTimestamp() });
+      await setDoc(doc(db, 'profiles', me.uid), { photo: url, updatedAt: serverTimestamp() }, { merge: true });
       showPhoto();
     } catch (err) { alert('Could not save that photo.'); console.error(err); }
   };
@@ -1692,7 +2011,7 @@ function showPhoto() {
   if (profiles[me.uid]) {
     const rm = el('button', 'row danger', 'Remove photo'); rm.style.marginTop = '12px';
     rm.onclick = async () => {
-      try { await setDoc(doc(db, 'profiles', me.uid), { photo: '', updatedAt: serverTimestamp() }); showPhoto(); }
+      try { await setDoc(doc(db, 'profiles', me.uid), { photo: '', updatedAt: serverTimestamp() }, { merge: true }); showPhoto(); }
       catch (err) { alert('Could not remove the photo.'); console.error(err); }
     };
     b.appendChild(rm);
@@ -1722,6 +2041,38 @@ async function revealEmails(pw, errNode, btn) {
     errNode.textContent = e && e.code === 'auth/too-many-requests' ? 'Too many attempts. Try again later.' : 'Wrong password.';
     btn.disabled = false;
   }
+}
+
+function modeLabel() { return { light: 'Light', dark: 'Dark', amoled: 'AMOLED black', auto: 'Auto (dark 6 PM – 6 AM)' }[themeMode()] || 'Light'; }
+function showMode() {
+  const b = setView('mode', 'Dark / light mode');
+  const cur = themeMode(), g = el('div', 'sgrp');
+  [['light', 'Light', 'sun'], ['dark', 'Dark', 'moon'], ['amoled', 'AMOLED black', 'moon'], ['auto', 'Auto (dark after sunset · 6 PM – 6 AM)', 'clock']].forEach(([k, l]) => {
+    g.appendChild(row(cur === k ? 'radioOn' : 'radioOff', l, () => { store.set('mode', k); applyMode(); showMode(); }, k === 'amoled' ? 'Pure black, saves battery on OLED screens' : '', false, true));
+  });
+  b.appendChild(g);
+  b.appendChild(el('div', 'note', 'This setting changes only on this phone.'));
+}
+
+function showLook() {
+  const b = setView('look', 'Chat style & font');
+  const pv = el('div', 'lkprev');
+  pv.appendChild(el('div', 'm them', 'Hey! Did you reach home? 🏠'));
+  pv.appendChild(el('div', 'm me', 'Yes, just now. Missed you ❤️'));
+  pv.appendChild(el('div', 'm them', 'আমিও তোমাকে মিস করছিলাম'));
+  b.appendChild(pv);
+  const fp = el('div', 'fontprev', 'Font preview · সুন্দর একটি দিন ✨');
+  b.appendChild(fp);
+  const radio = (title, key, opts, def) => {
+    b.appendChild(el('div', 'gh', title));
+    const g = el('div', 'sgrp'), cur = store.get(key) || def;
+    opts.forEach(([k, l]) => g.appendChild(row(cur === k ? 'radioOn' : 'radioOff', l, () => { store.set(key, k); applyLook(); showLook(); }, '', false, true)));
+    b.appendChild(g);
+  };
+  radio('Bubble style', 'bubble', [['round', 'Rounded'], ['sharp', 'Sharp'], ['minimal', 'Minimal (flat)'], ['tail', 'With a small tail']], 'round');
+  radio('Chat spacing', 'density', [['compact', 'Compact (ঘন)'], ['cozy', 'Cozy (মাঝারি)'], ['roomy', 'Roomy (খোলামেলা)']], 'cozy');
+  radio('Font', 'font', Object.entries(FONTS).map(([k, f]) => [k, f.n]), 'inter');
+  b.appendChild(el('div', 'note', 'These choices change only on this phone. Bengali text uses a Bengali font automatically.'));
 }
 
 function showFont() {
@@ -1761,10 +2112,15 @@ function wallpaperUrl(file) {
 }
 
 function showTheme() {
-  const b = setView('theme', 'Chat theme');
+  const b = setView('theme', 'Chat theme & wallpaper');
   if (!previewCfg) previewCfg = { ...themeCfg };
+  if (!isHex(previewCfg.c1)) previewCfg.c1 = DEF_THEME.c1;
+  if (!isHex(previewCfg.c2)) previewCfg.c2 = DEF_THEME.c2;
+
   b.appendChild(el('div', 'note', 'Theme and wallpaper are shared: when you apply them, they change on both phones. Dark / light mode stays personal.'));
-  b.appendChild(el('label', 'lbl', 'Colors'));
+
+  /* Color presets + Custom swatch */
+  b.appendChild(el('label', 'lbl', 'Theme colors'));
   const g = el('div', 'swatches');
   Object.entries(PRESETS).forEach(([k, p]) => {
     const sw = el('button', 'sw' + (previewCfg.preset === k ? ' sel' : ''), p.n);
@@ -1772,30 +2128,90 @@ function showTheme() {
     sw.onclick = () => { previewCfg.preset = k; applyTheme(); showTheme(); };
     g.appendChild(sw);
   });
+  const csw = el('button', 'sw' + (previewCfg.preset === 'custom' ? ' sel' : ''), 'Custom');
+  csw.style.background = 'linear-gradient(135deg,' + previewCfg.c1 + ',' + previewCfg.c2 + ')';
+  csw.onclick = () => { previewCfg.preset = 'custom'; applyTheme(); showTheme(); };
+  g.appendChild(csw);
   b.appendChild(g);
 
-  b.appendChild(el('label', 'lbl', 'Wallpaper'));
+  /* Custom color picker */
+  b.appendChild(el('label', 'lbl', 'Custom color picker'));
+  const cp = el('div', 'cpick');
+  [['Color 1', 'c1'], ['Color 2', 'c2']].forEach(([lbl, key]) => {
+    const l = el('label', '', lbl);
+    const inp = el('input'); inp.type = 'color'; inp.value = previewCfg[key];
+    inp.oninput = () => {
+      previewCfg[key] = inp.value;
+      previewCfg.preset = 'custom';
+      csw.style.background = 'linear-gradient(135deg,' + previewCfg.c1 + ',' + previewCfg.c2 + ')';
+      g.querySelectorAll('.sw').forEach(x => x.classList.remove('sel'));
+      csw.classList.add('sel');
+      applyTheme();
+    };
+    l.appendChild(inp); cp.appendChild(l);
+  });
+  b.appendChild(cp);
+
+  /* Live wallpaper preview */
+  b.appendChild(el('label', 'lbl', 'Wallpaper preview'));
   const pv = el('div', 'wprev'), wi = el('div', 'wi'), wd = el('div', 'wd');
   pv.appendChild(wi); pv.appendChild(wd);
-  pv.appendChild(el('div', 'm them', 'Hi there 👋')); pv.appendChild(el('div', 'm me', 'Hello! Love this one'));
+  pv.appendChild(el('div', 'm them', 'Hi there 👋'));
+  pv.appendChild(el('div', 'm me', 'Hello! Love this theme ✨'));
   const upd = () => {
-    wi.style.backgroundImage = previewCfg.wall ? 'url("' + previewCfg.wall + '")' : '';
-    wi.style.filter = 'blur(' + (previewCfg.blur || 0) + 'px)';
-    wd.style.background = previewCfg.wall ? 'rgba(0,0,0,' + (previewCfg.dim || 0) / 100 + ')' : 'none';
+    const hasWall = !!(previewCfg.wall || (previewCfg.wk && WALLS[previewCfg.wk]));
+    wi.style.background = '';
+    wi.style.backgroundImage = '';
+    if (previewCfg.wall) {
+      wi.style.backgroundImage = 'url("' + previewCfg.wall + '")';
+    } else if (previewCfg.wk && WALLS[previewCfg.wk]) {
+      wi.style.background = WALLS[previewCfg.wk].bg;
+    }
+    wi.style.filter = previewCfg.wall ? 'blur(' + (previewCfg.blur || 0) + 'px)' : 'none';
+    wd.style.background = hasWall ? 'rgba(0,0,0,' + (previewCfg.dim || 0) / 100 + ')' : 'none';
     applyTheme();
   };
   b.appendChild(pv); upd();
 
+  /* Built-in & seasonal wallpapers */
+  const BADGE = { eid: '🌙', monsoon: '🌧', winter: '❄', spring: '🌸', valentine: '❤', flow: '✨', hearts: '❤', stars: '⭐', bubbles: '🫧' };
+  const addWallGrid = (title, keys, includeNone) => {
+    b.appendChild(el('label', 'lbl', title));
+    const wt = el('div', 'wtiles');
+    if (includeNone) {
+      const noneBtn = el('button', 'wt' + (!previewCfg.wall && !previewCfg.wk ? ' sel' : ''), 'None');
+      noneBtn.style.background = 'var(--surface)';
+      noneBtn.style.color = 'var(--text)';
+      noneBtn.style.textShadow = 'none';
+      noneBtn.style.border = (!previewCfg.wall && !previewCfg.wk) ? '3px solid var(--text)' : '1px solid var(--line)';
+      noneBtn.onclick = () => { previewCfg.wall = ''; previewCfg.wk = ''; applyTheme(); showTheme(); };
+      wt.appendChild(noneBtn);
+    }
+    keys.forEach(k => {
+      const w = WALLS[k]; if (!w) return;
+      const sel = !previewCfg.wall && previewCfg.wk === k;
+      const btn = el('button', 'wt' + (sel ? ' sel' : ''), w.n);
+      btn.style.background = w.bg;
+      if (BADGE[k]) btn.appendChild(el('span', 'fxb', BADGE[k]));
+      btn.onclick = () => { previewCfg.wall = ''; previewCfg.wk = k; applyTheme(); showTheme(); };
+      wt.appendChild(btn);
+    });
+    b.appendChild(wt);
+  };
+  addWallGrid('Built-in & seasonal wallpapers', ['sunset', 'ocean', 'forest', 'blush', 'night', 'eid', 'monsoon', 'winter', 'spring', 'valentine'], true);
+  addWallGrid('Animated wallpapers', ['flow', 'hearts', 'stars', 'bubbles'], false);
+
+  /* Custom photo upload */
   const file = el('input'); file.type = 'file'; file.accept = 'image/*'; file.className = 'hidden';
   file.onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
-    try { previewCfg.wall = await wallpaperUrl(f); if (!previewCfg.dim) previewCfg.dim = 25; applyTheme(); showTheme(); }
+    try { previewCfg.wall = await wallpaperUrl(f); previewCfg.wk = ''; if (!previewCfg.dim) previewCfg.dim = 25; applyTheme(); showTheme(); }
     catch (err) { alert('Could not use that photo.'); console.error(err); }
   };
   b.appendChild(file);
   b.appendChild(row('🖼', previewCfg.wall ? 'Change wallpaper photo' : 'Upload wallpaper photo', () => file.click()));
 
-  if (previewCfg.wall) {
+  if (previewCfg.wall || previewCfg.wk) {
     const mk = (label, min, max, step, key, unit) => {
       const r = el('div', 'sl'); r.appendChild(el('span', '', label));
       const i = el('input'); i.type = 'range'; i.min = min; i.max = max; i.step = step; i.value = previewCfg[key] || 0;
@@ -1803,9 +2219,9 @@ function showTheme() {
       i.oninput = () => { previewCfg[key] = +i.value; v.textContent = i.value + unit; upd(); };
       r.appendChild(i); r.appendChild(v); return r;
     };
-    b.appendChild(mk('Blur', 0, 12, 1, 'blur', 'px'));
+    if (previewCfg.wall) b.appendChild(mk('Blur', 0, 12, 1, 'blur', 'px'));
     b.appendChild(mk('Dim', 0, 70, 5, 'dim', '%'));
-    const rm = row('🗑', 'Remove wallpaper', () => { previewCfg.wall = ''; applyTheme(); showTheme(); }, '', true);
+    const rm = row('🗑', 'Remove wallpaper', () => { previewCfg.wall = ''; previewCfg.wk = ''; applyTheme(); showTheme(); }, '', true);
     b.appendChild(rm);
   }
 
@@ -1815,7 +2231,17 @@ function showTheme() {
     apply.disabled = true;
     try {
       const c = previewCfg;
-      await setDoc(doc(db, 'meta', 'theme'), { preset: c.preset, wall: c.wall || '', blur: c.blur || 0, dim: c.dim || 0, by: me.uid, updatedAt: serverTimestamp() });
+      await setDoc(doc(db, 'meta', 'theme'), {
+        preset: c.preset,
+        c1: c.c1 || DEF_THEME.c1,
+        c2: c.c2 || DEF_THEME.c2,
+        wall: c.wall || '',
+        wk: c.wk || '',
+        blur: c.blur || 0,
+        dim: c.dim || 0,
+        by: me.uid,
+        updatedAt: serverTimestamp()
+      });
       previewCfg = null; applyTheme(); showHome();
     } catch (e) { alert('Could not save the theme.'); console.error(e); apply.disabled = false; }
   };
@@ -1872,7 +2298,7 @@ function showSearch() {
 function showLock() {
   const b = setView('lock', 'App lock');
   const has = !!store.get('pinhash');
-  b.appendChild(el('div', 'note', 'The PIN is stored only on this phone. It is asked when you open the app or after it has been in the background for 30 seconds.'));
+  b.appendChild(el('div', 'note', 'The PIN is stored only on this phone and covers the whole app. It is always asked when you open the app.'));
   const p = el('input', 'field'); p.type = 'password'; p.inputMode = 'numeric'; p.placeholder = 'New PIN (4–8 digits)'; p.maxLength = 8; b.appendChild(p);
   const s = el('button', 'primary', has ? 'Change PIN' : 'Turn on PIN');
   s.onclick = async () => {
@@ -1880,6 +2306,14 @@ function showLock() {
     store.set('pinhash', await sha(p.value)); showHome();
   };
   b.appendChild(s);
+  b.appendChild(el('div', 'gh', 'Ask for the PIN again'));
+  const cur = store.get('lockdelay') == null ? '30' : store.get('lockdelay');
+  const g = el('div', 'sgrp');
+  [['0', 'Immediately'], ['15', 'After 15 seconds'], ['30', 'After 30 seconds'], ['60', 'After 1 minute'], ['300', 'After 5 minutes'], ['never', 'Only when I reopen the app']].forEach(([k, l]) => {
+    g.appendChild(row(cur === k ? 'radioOn' : 'radioOff', l, () => { store.set('lockdelay', k); showLock(); }, '', false, true));
+  });
+  b.appendChild(g);
+  b.appendChild(el('div', 'note', 'This is how long the app can stay in the background before it locks again.'));
   if (has) {
     const d = el('button', 'row danger', 'Turn off PIN'); d.style.marginTop = '12px';
     d.onclick = () => { store.del('pinhash'); showHome(); };
