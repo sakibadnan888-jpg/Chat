@@ -187,6 +187,8 @@ form textarea:focus{border-color:var(--accent)}
 #wall.on{display:block}
 #wall::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,var(--dim,0))}
 .dsep{align-self:center;margin:10px 0 4px;padding:3px 12px;font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.load-more{align-self:center;margin:2px 0 10px;padding:7px 16px;font-size:13px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--accent);font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
+.load-more:disabled{opacity:.6;cursor:default}
 #toBottom{position:absolute;right:14px;bottom:12px;z-index:5;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);box-shadow:0 4px 16px rgba(40,20,120,.25);display:flex;align-items:center;justify-content:center;cursor:pointer}
 #toBottom svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 #tbBadge{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--grad);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
@@ -510,7 +512,7 @@ header .acts{display:flex;align-items:center;gap:0;flex:none}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp,
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, query, orderBy, limit, startAfter, onSnapshot, serverTimestamp,
          doc, setDoc, updateDoc, deleteDoc, getDocs, writeBatch, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -539,6 +541,7 @@ const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) 
 let me = null, partner = null, myEmail = '', msgs = [], nick = {}, clearedAt = 0, partnerPres = null;
 let unsubs = [], timers = [], firstLoad = true;
 let msgsLoaded = false, postsLoaded = false;
+let liveMsgs = [], olderMsgs = [], oldestSnap = null, hasMoreMsgs = false, loadingOlder = false, prepending = false, searchCache = null;
 let profiles = {};
 let replyTo = null, editing = null;
 
@@ -909,6 +912,7 @@ onAuthStateChanged(auth, user => {
   if (unsubPosts) { unsubPosts(); unsubPosts = null; } posts = [];
   timers.forEach(t => clearInterval(t)); timers = [];
   msgsLoaded = false; postsLoaded = false;
+  liveMsgs = []; olderMsgs = []; oldestSnap = null; hasMoreMsgs = false; loadingOlder = false; prepending = false; searchCache = null;
   if (user) {
     me = { uid: user.uid }; myEmail = user.email || '';
     partner = UIDS.find(u => u !== user.uid) || UIDS[0];
@@ -936,7 +940,12 @@ function startChat() {
   unsubs.push(onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc'), limit(200)),
     { includeMetadataChanges: true }, snap => {
       msgsLoaded = true;
-      msgs = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites })).reverse();
+      liveMsgs = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: d.metadata.hasPendingWrites })).reverse();
+      if (!olderMsgs.length) {
+        oldestSnap = snap.docs.length ? snap.docs[snap.docs.length - 1] : null;
+        hasMoreMsgs = snap.docs.length >= 200;
+      }
+      mergeMsgs();
       detectNew(); render(); markReceived();
     }, e => console.error(e)));
   unsubs.push(onSnapshot(doc(db, 'meta', 'settings'), s => {
@@ -964,6 +973,43 @@ function startChat() {
   timers.push(setInterval(() => { if (document.visibilityState === 'visible') setPresence(true); }, 30000));
   timers.push(setInterval(updateStatus, 5000));
   updateStatus();
+}
+
+function mergeMsgs() {
+  const map = new Map();
+  olderMsgs.forEach(m => map.set(m.id, m));
+  liveMsgs.forEach(m => map.set(m.id, m));
+  msgs = [...map.values()].sort((a, b) => ms(a.createdAt) - ms(b.createdAt));
+}
+
+async function loadOlderMsgs() {
+  if (!me || loadingOlder || !hasMoreMsgs || !oldestSnap) return;
+  loadingOlder = true;
+  const btn = $('loadOlderBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+  try {
+    const snap = await getDocs(query(collection(db, 'messages'), orderBy('createdAt', 'desc'), startAfter(oldestSnap), limit(200)));
+    if (snap.docs.length) {
+      oldestSnap = snap.docs[snap.docs.length - 1];
+      const batch = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: false })).reverse();
+      batch.forEach(m => { notifSeen.add(m.id); known.add(m.id); renderedIds.add(m.id); });
+      olderMsgs = [...batch, ...olderMsgs];
+      hasMoreMsgs = snap.docs.length >= 200;
+      mergeMsgs();
+      prepending = true;
+      render();
+      prepending = false;
+    } else {
+      hasMoreMsgs = false;
+      render();
+    }
+  } catch (e) {
+    console.error(e);
+    toast('Could not load older messages');
+  }
+  loadingOlder = false;
+  const b2 = $('loadOlderBtn');
+  if (b2) { b2.disabled = false; b2.textContent = '↑ Load older messages'; }
 }
 
 function visibleMsgs() {
@@ -1128,16 +1174,21 @@ function render() {
     ['them', 'me', 'them', 'me'].forEach(side => box.appendChild(el('div', 'skel-m ' + side)));
     return;
   }
-  const prev = box.scrollTop;
-  const atBottom = firstLoad || box.scrollHeight - box.scrollTop - box.clientHeight < 90;
+  const prev = box.scrollTop, prevH = box.scrollHeight;
+  const atBottom = !prepending && (firstLoad || box.scrollHeight - box.scrollTop - box.clientHeight < 90);
   const list = visibleMsgs();
   if (firstLoad) { known = new Set(); unread = 0; renderedIds = new Set(); }
-  popIds = firstLoad ? new Set() : new Set(list.filter(m => !renderedIds.has(m.id)).map(m => m.id));
+  popIds = (firstLoad || prepending) ? new Set() : new Set(list.filter(m => !renderedIds.has(m.id)).map(m => m.id));
   list.forEach(m => renderedIds.add(m.id));
   const fresh = list.filter(m => m.uid !== me.uid && !m.pending && !known.has(m.id));
-  if (!firstLoad && !atBottom) unread += fresh.length;
+  if (!firstLoad && !prepending && !atBottom) unread += fresh.length;
   list.forEach(m => known.add(m.id));
   box.innerHTML = '';
+  if (hasMoreMsgs && msgs.length) {
+    const lb = el('button', 'load-more', loadingOlder ? 'Loading…' : '↑ Load older messages');
+    lb.id = 'loadOlderBtn'; lb.disabled = loadingOlder; lb.onclick = loadOlderMsgs;
+    box.appendChild(lb);
+  }
   if (!list.length) {
     const emp = el('div', 'empty');
     emp.innerHTML = EMPTY_ART.chat;
@@ -1151,7 +1202,8 @@ function render() {
     if (k !== lastDay) { lastDay = k; box.appendChild(el('div', 'dsep', dayLabel(d))); }
     box.appendChild(bubble(m));
   });
-  box.scrollTop = atBottom ? box.scrollHeight : prev;
+  if (prepending) box.scrollTop = prev + (box.scrollHeight - prevH);
+  else box.scrollTop = atBottom ? box.scrollHeight : prev;
   firstLoad = false;
   if (atBottom) unread = 0;
   updateToBottom();
@@ -2278,21 +2330,64 @@ function showMedia() {
 
 function showSearch() {
   const b = setView('search', 'Search messages');
-  const inp = el('input', 'field'); inp.placeholder = 'Search…'; b.appendChild(inp);
+  const inp = el('input', 'field'); inp.placeholder = 'Search all messages…'; b.appendChild(inp);
+  const info = el('div', 'note', 'Loading full chat history…'); b.appendChild(info);
   const out = el('div'); b.appendChild(out);
-  inp.oninput = () => {
+  let pool = visibleMsgs();
+
+  const runSearch = () => {
     const q = inp.value.trim().toLowerCase(); out.innerHTML = '';
     if (!q) return;
-    const hits = visibleMsgs().filter(m => !m.deleted && m.text && m.text.toLowerCase().includes(q)).reverse().slice(0, 50);
+    const hits = pool.filter(m => !m.deleted && m.text && m.text.toLowerCase().includes(q)).slice().reverse().slice(0, 100);
     if (!hits.length) { out.appendChild(el('div', 'note', 'No results.')); return; }
     hits.forEach(m => {
-      const h = el('div', 'hit', m.text.length > 90 ? m.text.slice(0, 90) + '…' : m.text);
+      const h = el('div', 'hit', m.text.length > 100 ? m.text.slice(0, 100) + '…' : m.text);
       h.appendChild(el('small', '', (m.uid === me.uid ? 'You' : themName()) + ' · ' + fullTime(m.createdAt)));
-      h.onclick = () => { closePanel(); jumpTo(m.id); };
+      h.onclick = () => {
+        closePanel();
+        if (curTab !== 'chat') showTab('chat');
+        if (!$('m-' + m.id) && searchCache) {
+          const idx = searchCache.findIndex(x => x.id === m.id);
+          if (idx !== -1) {
+            const needed = searchCache.slice(idx);
+            needed.forEach(x => { notifSeen.add(x.id); known.add(x.id); renderedIds.add(x.id); });
+            olderMsgs = needed;
+            if (searchDocs && searchDocs.length) {
+              const docIdx = searchDocs.findIndex(d => d.id === needed[0].id);
+              if (docIdx !== -1) oldestSnap = searchDocs[docIdx];
+            }
+            hasMoreMsgs = idx > 0;
+            mergeMsgs();
+            prepending = true;
+            render();
+            prepending = false;
+          }
+        }
+        setTimeout(() => jumpTo(m.id), 40);
+      };
       out.appendChild(h);
     });
   };
+
+  inp.oninput = runSearch;
   inp.focus();
+
+  let searchDocs = null;
+  (async () => {
+    try {
+      const snap = await getDocs(query(collection(db, 'messages'), orderBy('createdAt', 'desc')));
+      if (view !== 'search') return;
+      searchDocs = snap.docs;
+      const all = snap.docs.map(d => ({ id: d.id, ...d.data(ST), pending: false })).reverse();
+      searchCache = all;
+      pool = all.filter(m => !(m.hiddenFor || []).includes(me.uid) && ms(m.createdAt) > clearedAt);
+      info.textContent = 'Searching all ' + pool.length + ' messages';
+      if (inp.value.trim()) runSearch();
+    } catch (e) {
+      console.error(e);
+      if (view === 'search') info.textContent = 'Searching loaded ' + pool.length + ' messages';
+    }
+  })();
 }
 
 function showLock() {
@@ -2337,6 +2432,7 @@ async function clearForAll() {
       if (n === 400) { await batch.commit(); batch = writeBatch(db); n = 0; }
     }
     if (n) await batch.commit();
+    olderMsgs = []; oldestSnap = null; hasMoreMsgs = false; searchCache = null;
     closePanel();
   } catch (e) { alert('Could not clear the chat.'); console.error(e); }
 }
